@@ -1,68 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../screen/home_screen.dart';
-
-Widget settingButton(BuildContext context) {
-  return Padding(
-    padding: EdgeInsets.only(right: 0.0.w),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Container(
-              width: 62.w,
-              height: 62.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFF232629),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF545659).withOpacity(0.1),
-                    offset: const Offset(8, 8),
-                    blurRadius: 10,
-                    spreadRadius: 1,
-                  ),
-                ],
-              ),
+Widget settingButton(BuildContext context, IconData icon,VoidCallback onPressed) {
+  return Material(
+    elevation: 30,
+    color: Colors.transparent,
+    shape: const CircleBorder(),
+    child: Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xffFFFFFF).withOpacity(0.04),
+            spreadRadius: 0,
+            blurRadius: 20,
+            offset: const Offset(0, -10),
+          ),
+          // shadow color 0xff00000 2% to the bottom side with more blur radius
+          BoxShadow(
+            color: const Color(0xff000000).withOpacity(0.02),
+            spreadRadius: 0,
+            blurRadius: 20,
+            offset: const Offset(0, 2),
+          ),
+          // shadow color 0xff00000 2% to the left side with more blur radius
+          BoxShadow(
+            color: const Color(0xff000000).withOpacity(0.02),
+            spreadRadius: 5,
+            blurRadius: 20,
+            offset: const Offset(-2, 0),
+          ),
+        ]
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          shape: CircleBorder(
+            // the border color should have and linear gradient color #000000 45% and #FFFFFF 100%
+            side: BorderSide(
+              color: const Color(0xff000000).withOpacity(0.1),
+              width: 1,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(63),
-              child: Container(
-                width: 62.w,
-                height: 62.h,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF232629),
-                      offset: Offset(3, 3),
-                      blurRadius: 3,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    //navigate to the homeScreen
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const HomeScreen();
-                    }));
-                  },
-                  icon: Icon(
-                    Icons.settings,
-                    color: const Color(0xffEBEBF5).withOpacity(0.6),
-                    size: 30,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
+          elevation: 0,
         ),
-      ],
+
+        child: Container(
+          height: 50.h,
+          width: 50.w,
+          decoration: BoxDecoration(
+            color: const Color(0xff202224).withOpacity(0.6),
+            //border color should be #000000 45% and #FFFFFF 100%
+            border: Border.all(
+              color: const Color(0xff202224).withOpacity(0.6),
+              width: 1,),
+            borderRadius: BorderRadius.circular(40.r),
+            // shadow that goes inside the box making the child look shallower
+            boxShadow: [
+              // shadow color 0xff00000 2% to the top side with more blur radius
+              BoxShadow(
+                color: const Color(0xffEBEBF5).withOpacity(0.2),
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: const Offset(3, -3),
+              ),
+              BoxShadow(
+                color: const Color(0xffEBEBF5).withOpacity(0.02),
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: const Offset(-3, 3),
+              ),
+            ],
+          ),
+          child: Icon(
+            icon,
+            color: const Color(0xffEBEBF5).withOpacity(0.6),
+            size: 24.sp,
+          ),
+        ),
+      ),
     ),
   );
 }

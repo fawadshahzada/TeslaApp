@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:test1/classes/list_tile_class.dart';
+import 'package:test1/common_widget/setting_button.dart';
 import 'package:test1/screen_widgets/setting_screen_widgets/setting_tabbar.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: ListTile(
                     title: Text('Tesla',
                         style: TextStyle(
-                          color: Color(0xffFFFFFF),
+                          color: const Color(0xffFFFFFF),
                           fontSize: 28.sp,
                           fontWeight: FontWeight.w700,
                         )),
@@ -50,7 +51,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         // battery icon and 187 Km
                         Icon(
                           FontAwesomeIcons.batteryHalf,
-                          color: Color(0xffEBEBF5).withOpacity(0.3),
+                          color: const Color(0xffEBEBF5).withOpacity(0.3),
                           size: 17.sp,
                         ),
                         SizedBox(
@@ -59,64 +60,20 @@ class _SettingScreenState extends State<SettingScreen> {
                         Text(
                           '187 Km',
                           style: TextStyle(
-                            color: Color(0xffEBEBF5).withOpacity(0.3),
+                            color: const Color(0xffEBEBF5).withOpacity(0.3),
                             fontSize: 17.sp,
                           ),
                         ),
                       ],
                     ),
                     // in the trailing i want to add a circular container with a person icon
-                    trailing: Card(
-                      elevation: 25,
-                      shape: CircleBorder(),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //navigate to the homeScreen
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const SettingScreen();
-                          }));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          shape: const CircleBorder(
-                            // the border color should have and linear gradient color #000000 45% and #FFFFFF 100%
-                            side: BorderSide(
-                              color: Color(0xff000000),
-                              width: 1.5,
-                            ),
-                          ),
-                          elevation: 0,
-                        ),
-
-                        child: Container(
-                          height: 50.h,
-                          width: 50.w,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
-                            //border color should be #000000 45% and #FFFFFF 100%
-                            border: Border.all(
-                              color: Color(0xff000000).withOpacity(0.45),
-                              width: 1.5,),
-                            borderRadius: BorderRadius.circular(40.r),
-                            // shadow that goes inside the box making the child look shallower
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.08),
-                                spreadRadius: 3,
-                                blurRadius: 5,
-                                offset: const Offset(0, 0),
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.person,
-                            color: Color(0xffEBEBF5).withOpacity(0.6),
-                            size: 24.sp,
-                          ),
-                        ),
-                      ),
-                    ),
+                    trailing: settingButton(context, Icons.person, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingScreen()
+                        ));
+                      }),
                   ),
                 ),
                 SizedBox(
@@ -149,7 +106,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       color: const Color(0xff27282A),
                       borderRadius: BorderRadius.circular(50.r),
                       border: Border.all(
-                        color: Color(0xffffff).withOpacity(0.1),
+                        color: const Color(0x00ffffff).withOpacity(0.1),
                         width: 1.5.w,
                       ),
                       // shadow that goes inside the box making the child look shallower

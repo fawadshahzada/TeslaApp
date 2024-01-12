@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:test1/common_widget/setting_button.dart';
 
-Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed) {
+Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed,context) {
   return Container(
     width: 178.w,
     height: 77.h,
+    padding: const EdgeInsets.only(left: 20,),
     decoration: BoxDecoration(
       color: Colors.black,
       borderRadius: BorderRadius.circular(40.r),
@@ -19,66 +21,25 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
       ),
     ),
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(
-          height: 62.h,
-          width: 62.w,
-          child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 17.sp,
+        Expanded(
+          child: SizedBox(
+            child: Center(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17.sp,
+                  fontFamily: 'SfProBold',
+                ),
               ),
             ),
           ),
         ),
         // circular elevated button with shadow and setting icon
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(40.r),
-            // shadow that goes inside the box making the child look shallower
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withOpacity(0.1),
-                spreadRadius: 5,
-                blurRadius: 10,
-                offset: const Offset(-4, 0),
-              ),
-              // shadow inside the box
-              BoxShadow(
-                color: Colors.white.withOpacity(0.1),
-                spreadRadius: 6,
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          height: 72.h,
-          width: 72.w,
-          margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-          padding: EdgeInsets.zero,
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              shape: const CircleBorder(),
-              elevation: 20,
-              splashFactory: NoSplash.splashFactory,
-              shadowColor: Colors.white.withOpacity(0.3),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Icon(
-                icon,
-                color: Color(0xff9EECD9).withOpacity(1),
-              ),
-            ),
-          ),
-        ),
+        Expanded(child: settingButton(context, icon, onPressed))
       ],
     ),
   );
