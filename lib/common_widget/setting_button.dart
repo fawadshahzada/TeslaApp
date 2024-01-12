@@ -5,7 +5,7 @@ import '../screen/home_screen.dart';
 
 Widget settingButton(BuildContext context) {
   return Padding(
-    padding: EdgeInsets.only(right: 40.0.w),
+    padding: EdgeInsets.only(right: 0.0.w),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [

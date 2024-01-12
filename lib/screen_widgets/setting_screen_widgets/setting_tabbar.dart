@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:test1/screen/charging_screen.dart';
 import 'package:test1/screen/look_screen.dart';
 
 Widget settingTabBar(BuildContext context) {
@@ -49,9 +50,14 @@ Widget settingTabBar(BuildContext context) {
           IconButton(
             onPressed: () {
               //navigate to the homeScreen
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const LockScreen();
-              }));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LockScreen();
+                  },
+                ),
+              );
             },
             icon: Icon(
               Icons.lock,
@@ -68,7 +74,12 @@ Widget settingTabBar(BuildContext context) {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              //navigate to the homeScreen
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const ChargingScreen();
+              }));
+            },
             icon: Icon(
               Icons.electric_bolt_sharp,
               color: unselectedColor,

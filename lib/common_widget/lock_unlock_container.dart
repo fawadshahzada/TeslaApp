@@ -13,8 +13,8 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
         begin: Alignment.centerRight,
         end: Alignment.centerLeft,
         colors: [
-          Color(0xFF494c51).withOpacity(0.5),
-          Color(0xFF2D2D2D).withOpacity(0.3),
+          const Color(0xFF494c51).withOpacity(0.5),
+          const Color(0xFF2D2D2D).withOpacity(0.3),
         ],
       ),
     ),

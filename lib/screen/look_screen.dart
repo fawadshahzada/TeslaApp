@@ -5,16 +5,22 @@ import 'package:test1/common_widget/lock_unlock_container.dart';
 import 'package:test1/common_widget/setting_button.dart';
 import 'package:test1/screen/unlock_screen.dart';
 
-class LockScreen extends StatelessWidget {
+class LockScreen extends StatefulWidget {
   const LockScreen({super.key});
 
+  @override
+  State<LockScreen> createState() => _LockScreenState();
+}
+
+class _LockScreenState extends State<LockScreen> {
+  bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+        decoration: BoxDecoration(
+          gradient: isExpanded?:LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
