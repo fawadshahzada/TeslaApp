@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:test1/common_widget/setting_button.dart';
 
+import '../common_widget/custom_appbar.dart';
+import '../repository/nearby_chargers_list.dart';
+
 class ChargingScreen extends StatefulWidget {
   const ChargingScreen({super.key});
 
@@ -9,8 +12,10 @@ class ChargingScreen extends StatefulWidget {
   State<ChargingScreen> createState() => _ChargingScreenState();
 }
 
-class _ChargingScreenState extends State<ChargingScreen> with SingleTickerProviderStateMixin {
+class _ChargingScreenState extends State<ChargingScreen>
+    with SingleTickerProviderStateMixin {
   bool isExpanded = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -36,27 +41,7 @@ class _ChargingScreenState extends State<ChargingScreen> with SingleTickerProvid
               SizedBox(
                 height: 30.h,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  //back button
-                  settingButton(context, Icons.arrow_back_ios_new, () {
-                    Navigator.pop(context);
-                  }),
-                  const Text(
-                    'Charging',
-                    style: TextStyle(
-                      color: Color(0xffFFFFFF),
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  // setting button
-                  settingButton(context, Icons.settings, () {
-                    Navigator.pop(context);
-                  }),
-                ],
-              ),
+              customAppBar(context,'CHARGING'),
               // animated image and container size
               SizedBox(
                 height: 350.h,
@@ -93,7 +78,8 @@ class _ChargingScreenState extends State<ChargingScreen> with SingleTickerProvid
                                   Text(
                                     '%',
                                     style: TextStyle(
-                                      color: const Color(0xffEBEBF5).withOpacity(0.6),
+                                      color: const Color(0xffEBEBF5)
+                                          .withOpacity(0.6),
                                       fontSize: 24.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -124,7 +110,6 @@ class _ChargingScreenState extends State<ChargingScreen> with SingleTickerProvid
                             decoration: BoxDecoration(
                               color: const Color(0xff58cbf1).withOpacity(0.2),
                               borderRadius: BorderRadius.circular(0),
-
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
@@ -196,31 +181,32 @@ class _ChargingScreenState extends State<ChargingScreen> with SingleTickerProvid
                           height: 55.h,
                           width: 200.w,
                           decoration: BoxDecoration(
-                            color: const Color(0xff58cbf1).withOpacity(1),
-                            borderRadius: BorderRadius.circular(0),
-                            gradient: const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Color(0xff5dcef0),
-                                Color(0xff87e1e1),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xff58cbf1).withOpacity(0.1),
-                                spreadRadius: 20,
-                                blurRadius: 30,
-                                offset: const Offset(0,-40),
+                              color: const Color(0xff58cbf1).withOpacity(1),
+                              borderRadius: BorderRadius.circular(0),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xff5dcef0),
+                                  Color(0xff87e1e1),
+                                ],
                               ),
-                              BoxShadow(
-                                color: const Color(0xff58cbf1).withOpacity(0.4),
-                                spreadRadius: 20,
-                                blurRadius: 20,
-                                offset: const Offset(10,-20),
-                              ),
-                            ]
-                          ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      const Color(0xff58cbf1).withOpacity(0.1),
+                                  spreadRadius: 20,
+                                  blurRadius: 30,
+                                  offset: const Offset(0, -40),
+                                ),
+                                BoxShadow(
+                                  color:
+                                      const Color(0xff58cbf1).withOpacity(0.4),
+                                  spreadRadius: 20,
+                                  blurRadius: 20,
+                                  offset: const Offset(10, -20),
+                                ),
+                              ]),
                         ),
                       ),
                     ),
@@ -391,50 +377,141 @@ class _ChargingScreenState extends State<ChargingScreen> with SingleTickerProvid
                 elevation: 5,
                 shadowColor: Colors.black.withOpacity(0.1),
                 child: Container(
-                  height: isExpanded?300.h:130.h,
-                  width: 338.w,
+                  height: isExpanded ? 314.h : 130.h,
                   decoration: BoxDecoration(
                     color: const Color(0xff202122).withOpacity(0.7),
                     borderRadius: BorderRadius.circular(40.r),
-                    border: Border.all(
-                      color: Colors.black.withOpacity(0.1),
-                      width: 1,
+                    border: Border.lerp(
+                      //top and left should be black and the rest should be white
+                      Border(
+                        top: BorderSide(
+                          color: Colors.black.withOpacity(0.1),
+                          width: 1,
+                        ),
+                        left: BorderSide(
+                          color: Colors.black.withOpacity(0.1),
+                          width: 1,
+                        ),
+                      ),
+                      Border(
+                        top: BorderSide(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                        left: BorderSide(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      0.5,
                     ),
                     boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xff000000).withOpacity(0.02),
-                      ),
+                      // BoxShadow(
+                      //   blurRadius: 4,
+                      //   spreadRadius: -10,
+                      //   color: const Color(0xff000000).withOpacity(0.5),
+                      // ),
                     ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 90.h,
-                          width: 297.w,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Nearby Superchargers',
-                                style: TextStyle(
-                                    color: const Color(0xffFFFFFF),
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'SfProRegular'),
-                              ),
-                              settingButton(
-                                  context, isExpanded?Icons.keyboard_arrow_up:Icons.keyboard_arrow_down_sharp, () {
-                                setState(() {
-                                  isExpanded = !isExpanded;
-                                });
-                              }),
-                            ],
-                          ),
+                  child: Container(
+                    height: isExpanded ? 304.h : 120.h,
+                    width: 338.w,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff202122).withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(40.r),
+                      border: Border.all(
+                        color: Colors.black.withOpacity(0.1),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, -4),
+                          color: const Color(0xff000000).withOpacity(0.1),
                         ),
                       ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 90.h,
+                            width: 297.w,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Nearby Superchargers',
+                                  style: TextStyle(
+                                      color: const Color(0xffFFFFFF),
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'SfProRegular'),
+                                ),
+                                settingButton(
+                                    context,
+                                    isExpanded
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down_sharp, () {
+                                  setState(() {
+                                    isExpanded = !isExpanded;
+                                  });
+                                }),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: isExpanded ? 10.h : 0.h,
+                          ),
+                          SizedBox(
+                            height: isExpanded ? 175.h : 0.h,
+                            width: 297.w,
+                            child: ListView(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    'Tesla Supercharger -',
+                                    style: TextStyle(
+                                      color: const Color(0xffEBEBF5)
+                                          .withOpacity(0.6),
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Montreal, QC\n 2 / 4 available',
+                                    style: TextStyle(
+                                      color: const Color(0xffEBEBF5)
+                                          .withOpacity(0.6),
+                                    ),
+                                  ),
+                                  isThreeLine: true,
+                                  trailing: tailingCommon(),
+                                ),
+                                SizedBox(height: 10.h),
+                                ListTile(
+                                  title: Text(
+                                    'Tesla Supercharger -',
+                                    style: TextStyle(
+                                      color: const Color(0xffEBEBF5)
+                                          .withOpacity(0.6),
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Montreal, QC\n 2 / 4 available',
+                                    style: TextStyle(
+                                      color: const Color(0xffEBEBF5)
+                                          .withOpacity(0.6),
+                                    ),
+                                  ),
+                                  isThreeLine: true,
+                                  trailing: tailingCommon(),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

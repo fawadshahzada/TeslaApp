@@ -49,7 +49,7 @@ Widget settingButton(BuildContext context, IconData icon,VoidCallback onPressed)
           height: 50.h,
           width: 50.w,
           decoration: BoxDecoration(
-            color: const Color(0xff202224).withOpacity(0.6),
+            color: Colors.transparent,
             //border color should be #000000 45% and #FFFFFF 100%
             border: Border.all(
               color: const Color(0xff202224).withOpacity(0.6),
@@ -59,16 +59,16 @@ Widget settingButton(BuildContext context, IconData icon,VoidCallback onPressed)
             boxShadow: [
               // shadow color 0xff00000 2% to the top side with more blur radius
               BoxShadow(
-                color: const Color(0xffEBEBF5).withOpacity(0.2),
+                color: const Color(0xffEBEBF5).withOpacity(0.09),
                 spreadRadius: 5,
                 blurRadius: 10,
-                offset: const Offset(3, -3),
+                offset: const Offset(-6, -8),
               ),
               BoxShadow(
-                color: const Color(0xffEBEBF5).withOpacity(0.02),
+                color: const Color(0xffEBEBF5).withOpacity(0.01),
                 spreadRadius: 5,
                 blurRadius: 10,
-                offset: const Offset(-3, 3),
+                offset: const Offset(0, -3),
               ),
             ],
           ),

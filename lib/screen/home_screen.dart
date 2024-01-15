@@ -1,87 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:test1/screen/setting_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../models/home_providers.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final int currentScreen;
+
+  const HomeScreen({super.key, required this.currentScreen});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const SettingScreen(),
-      // bottomNavigationBar: Container(
-      //   height: 78.h,
-      //   width: 390.w,
-      //   decoration: const BoxDecoration(
-      //     color: Colors.transparent,
-      //     // top left and right corner should be sharply rounded
-      //     borderRadius: BorderRadius.only(
-      //       topLeft: Radius.circular(0),
-      //       topRight: Radius.circular(0),
-      //     ),
-      //     // make the box color transparent
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.transparent,
-      //         spreadRadius: 0,
-      //         blurRadius: 0,
-      //         offset: Offset(0, 0),
-      //       ),
-      //     ],
-      //   ),
-      //   child: ClipPath(
-      //    // clipper: BottomAppBarClipper(),
-      //     child: Container(
-      //       height: 78.h,
-      //       width: 390.w,
-      //       decoration: BoxDecoration(
-      //         // top left and right corner should be sharply rounded
-      //         borderRadius: BorderRadius.all(
-      //           Radius.circular(100.r),
-      //         ),
-      //         color: Colors.green,
-      //       ),
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //         children: [
-      //           IconButton(
-      //             onPressed: () {},
-      //             icon: Icon(
-      //               Icons.home,
-      //               color: const Color(0xffEBEBF5).withOpacity(0.6),
-      //               size: 30,
-      //             ),
-      //           ),
-      //           IconButton(
-      //             onPressed: () {},
-      //             icon: Icon(
-      //               Icons.search,
-      //               color: const Color(0xffEBEBF5).withOpacity(0.6),
-      //               size: 30,
-      //             ),
-      //           ),
-      //           const Spacer(),
-      //           IconButton(
-      //             onPressed: () {},
-      //             icon: Icon(
-      //               Icons.notifications,
-      //               color: const Color(0xffEBEBF5).withOpacity(0.6),
-      //               size: 30,
-      //             ),
-      //           ),
-      //           IconButton(
-      //             onPressed: () {},
-      //             icon: Icon(
-      //               Icons.person,
-      //               color: const Color(0xffEBEBF5).withOpacity(0.6),
-      //               size: 30,
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      // ),
+      body: Consumer<HomeProvider>(builder: (context, watch, child) {
+        watch.changeIndex = (currentScreen);
+        return watch.currentScreen;
+      }),
+      bottomNavigationBar:
+          Consumer<HomeProvider>(builder: (context, watch, child) {
+        return Container(
+          height: 78.h,
+          width: 390.w,
+          color: Colors.black,
+          //padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: ClipPath(
+            clipper: BottomAppBarClipper(),
+            child: Container(
+              height: 78.h,
+              width: 390.w,
+              decoration: BoxDecoration(
+                color: const Color(0xff18191b),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40.r),
+                  topRight: Radius.circular(40.r),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      watch.changeIndex=0;
+                    },
+                    icon: Icon(
+                      Icons.home,
+                      color: const Color(0xffEBEBF5).withOpacity(0.6),
+                      size: 30,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      watch.changeIndex=(1);
+                    },
+                    icon: Icon(
+                      Icons.search,
+                      color: const Color(0xffEBEBF5).withOpacity(0.6),
+                      size: 30,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 40.w,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      watch.changeIndex=(2);
+                    },
+                    icon: Icon(
+                      Icons.location_on_outlined,
+                      color: const Color(0xffEBEBF5).withOpacity(0.6),
+                      size: 30,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      watch.changeIndex=(3);
+                    },
+                    icon: Icon(
+                      Icons.person,
+                      color: const Color(0xffEBEBF5).withOpacity(0.6),
+                      size: 30,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
       // floatingActionButton: Container(
       //   height: 72.h,
       //   width: 72.w,
@@ -92,7 +97,7 @@ class HomeScreen extends StatelessWidget {
       //     style: ElevatedButton.styleFrom(
       //       backgroundColor: const Color(0xff18191b),
       //       shape: const CircleBorder(),
-      //       elevation: 10,
+      //       elevation: 20,
       //     ),
       //     child: const Icon(
       //       Icons.add,
@@ -108,18 +113,31 @@ class HomeScreen extends StatelessWidget {
 class BottomAppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    debugPrint(size.width.toString());
-    var path = Path();
+    final path = Path();
+    final height = size.height;
+    final width = size.width;
+    //create a custom notch for the custom bottom nav bar
+    // path.moveTo(0, 0);
+    // path.lineTo(0, height);
+    // how at the place width/2, and height i want to create a notch
+    path.lineTo(width / 2 - 20, 0);
+    path.lineTo(width / 2, 30);
+    path.lineTo(width / 2+10, 20);
+    path.lineTo(width / 2+20, 10);
+    path.lineTo(width / 2+30, 0);
+    path.lineTo(width / 2 + 20, height/2 - 10);
+    path.lineTo(width / 2 + 30, 0);
+
+    path.lineTo(width, 0);
+    path.lineTo(width, height);
     path.lineTo(0, size.height);
-    var firstStart = Offset(0, size.height / 2.5);
-    var firstEnd = Offset(size.width, size.height);
-    path.quadraticBezierTo(firstEnd.dx, firstEnd.dy, firstStart.dx, firstStart.dy);
+
     path.close();
     return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
     return false;
   }
 }

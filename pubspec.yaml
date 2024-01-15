@@ -33,6 +33,7 @@ dependencies:
   flutter_screenutil:
   font_awesome_flutter:
   flutter_inset_box_shadow:
+  provider:
 
 
   # The following adds the Cupertino Icons font to your application.

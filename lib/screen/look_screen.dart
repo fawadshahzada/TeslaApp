@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:test1/common_widget/lock_unlock_container.dart';
 import 'package:test1/common_widget/setting_button.dart';
-import 'package:test1/screen/setting_screen.dart';
+import 'package:test1/screen/home_screen.dart';
 
 class LockScreen extends StatefulWidget {
   const LockScreen({super.key});
@@ -28,7 +28,6 @@ class _LockScreenState extends State<LockScreen>
       ..addListener(() {
         setState(() {});
       });
-    // _controller.forward();
   }
 
   @override
@@ -72,15 +71,15 @@ class _LockScreenState extends State<LockScreen>
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 250.w),
-              child: settingButton(context, Icons.settings, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingScreen()
-                  ));
-              })
-            ),
+                padding: EdgeInsets.only(left: 250.w),
+                child: settingButton(context, Icons.settings, () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen(
+                                currentScreen: 0,
+                              )));
+                })),
             isExpanded
                 ? SizedBox(
                     height: 400.h,
@@ -98,10 +97,11 @@ class _LockScreenState extends State<LockScreen>
                             child: Text(
                               'Model 3',
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 40.sp,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'SfProBold'),
+                                color: Colors.white,
+                                fontSize: 40.sp,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'SfProBold',
+                              ),
                             ),
                           ),
                         ),
@@ -133,7 +133,7 @@ class _LockScreenState extends State<LockScreen>
               () {
                 // make the value equal to 0
                 _controller.reset();
-                HapticFeedback.heavyImpact();
+                HapticFeedback.lightImpact();
                 _controller.forward();
                 setState(() {
                   isExpanded = !isExpanded;
