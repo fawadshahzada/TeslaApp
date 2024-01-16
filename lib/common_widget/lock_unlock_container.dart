@@ -39,7 +39,7 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
           ),
         ),
         // circular elevated button with shadow and setting icon
-        Expanded(child: settingButton(context, icon, onPressed))
+        settingButton(context, icon, onPressed)
       ],
     ),
   );

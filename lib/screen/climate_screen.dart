@@ -71,8 +71,8 @@ class _ClimateScreenState extends State<ClimateScreen> {
     String value,
   ) {
     return Container(
-      height: 168.h,
-      width: 168.w,
+      height: 200.h,
+      width: 200.w,
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(1),
         shape: BoxShape.circle,
@@ -100,49 +100,67 @@ class _ClimateScreenState extends State<ClimateScreen> {
         ],
       ),
       // inside is another container with the same size and shape but the shadows are inwards
-      child: Padding(
-        padding: EdgeInsets.all(25.r),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2),
-            shape: BoxShape.circle,
-            boxShadow: [
-              // shadow color 0xff00000 2% to the top side with more blur radius
-              BoxShadow(
-                color: const Color(0xffEBEBF5).withOpacity(0.09),
-                spreadRadius: 5,
-                blurRadius: 10,
-                offset: const Offset(-6, -8),
+      child: Stack(
+        children: [
+          Container(
+            width: 300.w,
+            height: 300.h,
+            decoration: BoxDecoration(
+            color: Colors.transparent,
+              borderRadius: BorderRadius.all(
+                Radius.circular(50.r),
               ),
-              // shadow color 0xff00000 2% to the bottom side with more blur radius
-              BoxShadow(
-                color: const Color(0xffffffff).withOpacity(0.02),
-                spreadRadius: 0,
-                blurRadius: 20,
-                offset: const Offset(0, 2),
-              ),
-              // shadow color 0xff00000 2% to the left side with more blur radius
-              BoxShadow(
-                color: const Color(0xffffffff).withOpacity(0.02),
-                spreadRadius: 5,
-                blurRadius: 20,
-                offset: const Offset(-2, 0),
-              ),
-            ],
+            ),
+            child: CustomPaint(
+              painter: MyPainter(),
+              child: Container(),
+            ),
           ),
-          child: Center(
-            //large white bold text, which will be number
-            child: Text(
-              value,
-              style: TextStyle(
-                color: const Color(0xff5C5C62),
-                fontSize: 54.sp,
-                fontWeight: FontWeight.w100,
-                fontFamily: 'SfProBold',
+          Padding(
+            padding: EdgeInsets.all(25.r),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  // shadow color 0xff00000 2% to the top side with more blur radius
+                  BoxShadow(
+                    color: const Color(0xffEBEBF5).withOpacity(0.09),
+                    spreadRadius: 5,
+                    blurRadius: 10,
+                    offset: const Offset(-6, -8),
+                  ),
+                  // shadow color 0xff00000 2% to the bottom side with more blur radius
+                  BoxShadow(
+                    color: const Color(0xffffffff).withOpacity(0.02),
+                    spreadRadius: 0,
+                    blurRadius: 20,
+                    offset: const Offset(0, 2),
+                  ),
+                  // shadow color 0xff00000 2% to the left side with more blur radius
+                  BoxShadow(
+                    color: const Color(0xffffffff).withOpacity(0.02),
+                    spreadRadius: 5,
+                    blurRadius: 20,
+                    offset: const Offset(-2, 0),
+                  ),
+                ],
+              ),
+              child: Center(
+                //large white bold text, which will be number
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    color: const Color(0xff5C5C62),
+                    fontSize: 54.sp,
+                    fontWeight: FontWeight.w100,
+                    fontFamily: 'SfProBold',
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -232,7 +250,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                   Color(0xff2FB8FF).withOpacity(0.3),
                   Colors.white.withOpacity(0.2),
                 ],
-                stops: [0.2, 1.0],
+                stops: const [0.2, 1.0],
               ),
             ),
             child: Column(
@@ -249,7 +267,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                     children: [
                       ShaderMask(
                         blendMode: BlendMode.srcIn,
-                        shaderCallback: (Rect bounds) => RadialGradient(
+                        shaderCallback: (Rect bounds) => const RadialGradient(
                           center: Alignment.topCenter,
                           stops: [.5, 1],
                           colors: [
@@ -443,4 +461,61 @@ class RectSliderThumbShape extends SliderComponentShape {
       Paint()..color = color,
     );
   }
+}
+
+class MyPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Get the center of the canvas
+    final center = Offset(size.width / 2, size.height / 2);
+
+    // Draw the gray background seen on the progress indicator
+    // This will act as the background layer.
+    canvas.drawCircle(
+      center,
+      85,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..color = Colors.black12
+        ..strokeWidth = 30,
+    );
+
+    // Create a new layer where we will be painting the
+    // actual progress indicator
+    canvas.saveLayer(
+      Rect.fromCenter(center: center, width: 200, height: 200),
+      Paint(),
+    );
+
+    //Draw the light green portion of the progress indicator
+    canvas.drawArc(
+      Rect.fromCenter(center: center, width: 170, height: 170),
+      0,
+      10,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..color = Colors.green[100]!
+        ..strokeWidth = 30,
+    );
+
+    // canvas.drawArc(
+    //   Rect.fromCenter(center: center, width: 155, height: 155),
+    //   0,
+    //   360,
+    //   false,
+    //   Paint()
+    //     ..style = PaintingStyle.stroke
+    //     ..strokeCap = StrokeCap.round
+    //     ..color = Colors.green
+    //     ..strokeWidth = 15
+    //     ..blendMode = BlendMode.srcIn,
+    // );
+    // we fatten the layer
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

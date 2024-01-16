@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:test1/classes/list_tile_class.dart';
@@ -117,6 +118,20 @@ class _SettingScreenState extends State<SettingScreen> {
                           spreadRadius: 20,
                           blurRadius: 20,
                           offset: const Offset(10, -10),
+                        ),
+                        BoxShadow(
+                          offset: Offset(4, 8),
+                          blurRadius: 5,
+                          spreadRadius: -20,
+                          color: Colors.black.withOpacity(0.2),
+                          inset: true,
+                        ),
+                        BoxShadow(
+                          offset: Offset(4, 8),
+                          blurRadius: 10,
+                          spreadRadius: -5,
+                          color: Colors.black.withOpacity(0.4),
+                          inset: true,
                         ),
                       ],
                     ),

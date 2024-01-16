@@ -27,6 +27,22 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedIconTheme: IconThemeData(
+                color: Colors.white,
+              ),
+              unselectedIconTheme: IconThemeData(
+                color: Colors.white,
+              ),
+              selectedLabelStyle: TextStyle(
+                color: Colors.white,
+              ),
+              unselectedLabelStyle: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
           home: const HomeScreen(currentScreen: 0),
         ),
