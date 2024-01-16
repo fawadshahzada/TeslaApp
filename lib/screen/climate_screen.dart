@@ -1,5 +1,6 @@
-import 'dart:math';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:test1/common_widget/custom_appbar.dart';
@@ -18,9 +19,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             // the gradient color should be from #202327 to #292C31
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
@@ -164,7 +165,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
         SizedBox(
           width: 10.w,
         ),
-        settingButton(context, icon, () {}),
+        settingButton(context, icon, () {
+          _showBottomSheet(context, '1.0', (value) {});
+        }),
         SizedBox(
           width: 10.w,
         ),
@@ -194,6 +197,142 @@ class _ClimateScreenState extends State<ClimateScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  // bottom sheet function which will be called when the user clicks on the settings button
+  void _showBottomSheet(BuildContext context, String value, onChanged) {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(40.r)),
+      ),
+      elevation: 5,
+      backgroundColor: Colors.black.withOpacity(1),
+      context: context,
+      builder: (context) {
+        return BackdropFilter(
+          // filter for the blur glass like effect
+          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
+            height: 144.h,
+            width: 390.w,
+            // margin:
+            //     const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.all(
+                Radius.circular(40.r),
+              ),
+              gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment.topLeft,
+                colors: [
+                  Color(0xff2FB8FF).withOpacity(0.3),
+                  Colors.white.withOpacity(0.2),
+                ],
+                stops: [0.2, 1.0],
+              ),
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20.h,
+                ),
+                // a row with 4 buttons, one is icon button, second is left arrow button
+                // value and then right arrow button and then a button with check icon
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ShaderMask(
+                        blendMode: BlendMode.srcIn,
+                        shaderCallback: (Rect bounds) => RadialGradient(
+                          center: Alignment.topCenter,
+                          stops: [.5, 1],
+                          colors: [
+                           Color(0xff2FB8FF),
+                           Color(0xff9EECD9),
+                          ],
+                        ).createShader(bounds),
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.power_settings_new,
+                              color: const Color(0xffEBEBF5).withOpacity(0.6),
+                              size: 30,
+                            ),
+                      ),),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          CupertinoIcons.left_chevron,
+                          color: const Color(0xffEBEBF5).withOpacity(0.6),
+                          size: 18.sp,
+                        ),
+                      ),
+                      Text(
+                        value+'°',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 34.sp,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'SfProBold',
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          CupertinoIcons.right_chevron,
+                          color: const Color(0xffEBEBF5).withOpacity(0.6),
+                          size: 18.sp,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.event,
+                          color: const Color(0xffEBEBF5).withOpacity(0.6),
+                          size: 22.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // a row with text on or off and a text value both at the other side of things
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 35.0.w,vertical: 25.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'On',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'SfProBold',
+                        ),
+                      ),
+                      Text(
+                        'Vent',
+                        style: TextStyle(
+                          color: const Color(0xffEBEBF5).withOpacity(0.6),
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'SfProBold',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -282,9 +421,8 @@ class RectSliderThumbShape extends SliderComponentShape {
     final double evaluatedElevation =
         elevationTween.evaluate(activationAnimation);
     final Path path = Path()
-      ..addOval(
-          Rect.fromCenter(
-              center: center, width: 2 * radius, height: 3 * radius));
+      ..addOval(Rect.fromCenter(
+          center: center, width: 2 * radius, height: 3 * radius));
 
     bool paintShadows = true;
     assert(() {
@@ -295,7 +433,8 @@ class RectSliderThumbShape extends SliderComponentShape {
     }());
 
     if (paintShadows) {
-      canvas.drawShadow(path, Colors.black.withOpacity(0.4), evaluatedElevation, true);
+      canvas.drawShadow(
+          path, Colors.black.withOpacity(0.4), evaluatedElevation, true);
     }
 
     // Use drawRect instead of drawCircle

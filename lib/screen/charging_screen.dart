@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:test1/common_widget/setting_button.dart';
 
@@ -341,8 +342,8 @@ class _ChargingScreenState extends State<ChargingScreen>
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Color(0xff000000).withOpacity(0.8),
-                              Color(0xffFFFFFF).withOpacity(0.08),
+                              const Color(0xff000000).withOpacity(0.8),
+                              const Color(0xffFFFFFF).withOpacity(0.08),
                             ],
                           ),
                         ),
@@ -406,11 +407,21 @@ class _ChargingScreenState extends State<ChargingScreen>
                       0.5,
                     ),
                     boxShadow: [
-                      // BoxShadow(
-                      //   blurRadius: 4,
-                      //   spreadRadius: -10,
-                      //   color: const Color(0xff000000).withOpacity(0.5),
-                      // ),
+                      BoxShadow(
+                        offset: Offset(4, 8),
+                        blurRadius: 5,
+                        spreadRadius: -20,
+                        color: Colors.black.withOpacity(0.2),
+                        inset: true,
+                      ),
+                      BoxShadow(
+                        offset: Offset(4, 8),
+                        blurRadius: 10,
+                        spreadRadius: -5,
+                        color: Colors.black.withOpacity(0.4),
+                        inset: true,
+                      ),
+
                     ],
                   ),
                   child: Container(
