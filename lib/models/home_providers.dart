@@ -18,9 +18,9 @@ class HomeProvider extends ChangeNotifier{
   }else if(_currentIndex == 1){
     return const ChargingScreen();
   }else if(_currentIndex == 2){
-    return const LockScreen();
-  }else{
     return const ClimateScreen();
+  }else{
+    return const LockScreen();
   }
   }
 }

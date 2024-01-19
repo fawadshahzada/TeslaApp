@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:test1/classes/list_tile_class.dart';
 import 'package:test1/common_widget/setting_button.dart';
+import 'package:test1/screen/home_screen.dart';
 import 'package:test1/screen_widgets/setting_screen_widgets/setting_tabbar.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   height: 20.h,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10,right: 2),
+                  padding: const EdgeInsets.only(left: 10, right: 2),
                   child: ListTile(
                     title: Text('Tesla',
                         style: TextStyle(
@@ -68,13 +69,20 @@ class _SettingScreenState extends State<SettingScreen> {
                       ],
                     ),
                     // in the trailing i want to add a circular container with a person icon
-                    trailing: settingButton(context, Icons.person, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingScreen()
-                        ));
-                      }),
+                    trailing: settingButton(
+                      context,
+                      Icons.person,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(
+                              currentScreen: 0,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -102,7 +110,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Container(
                     width: 330.w,
                     height: 500.h,
-                    padding: EdgeInsets.only(top: 30.h,bottom: 20.h,left: 25.w,right: 15.w),
+                    padding: EdgeInsets.only(
+                        top: 30.h, bottom: 20.h, left: 25.w, right: 15.w),
                     decoration: BoxDecoration(
                       color: const Color(0xff27282A),
                       borderRadius: BorderRadius.circular(50.r),
@@ -120,14 +129,14 @@ class _SettingScreenState extends State<SettingScreen> {
                           offset: const Offset(10, -10),
                         ),
                         BoxShadow(
-                          offset: Offset(4, 8),
+                          offset: const Offset(4, 8),
                           blurRadius: 5,
                           spreadRadius: -20,
                           color: Colors.black.withOpacity(0.2),
                           inset: true,
                         ),
                         BoxShadow(
-                          offset: Offset(4, 8),
+                          offset: const Offset(4, 8),
                           blurRadius: 10,
                           spreadRadius: -5,
                           color: Colors.black.withOpacity(0.4),

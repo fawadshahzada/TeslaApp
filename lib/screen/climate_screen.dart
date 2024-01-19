@@ -1,8 +1,10 @@
+import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:test1/common_widget/custom_appbar.dart';
 import 'package:test1/common_widget/setting_button.dart';
 
@@ -39,13 +41,59 @@ class _ClimateScreenState extends State<ClimateScreen> {
               ),
               customAppBar(context, 'CLIMATE'),
               SizedBox(
-                height: 97.h,
-              ),
-              ClipRRect(
-                child: circularContainer('2'),
+                height: 0.h,
               ),
               SizedBox(
-                height: 78.h,
+                height: 300.h,
+                width: 300.w,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          // drop shadow effect to the top left
+                          BoxShadow(
+                            color: const Color(0xffffffff).withOpacity(0.1),
+                            spreadRadius: -60,
+                            blurRadius: 10,
+                            offset: const Offset(-4, -8),
+                          ),
+                        ],
+                      ),
+                      child: CustomPaint(
+                        size: Size(370, (370*1).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                        painter: RPSCustomPainter(),
+                      ),
+                    ),
+                    // positioned text in the center of the circle
+                    Positioned(
+                      top: 110.h,
+                      left: 110.w,
+                      child: Text(
+                        '22°',
+                        style: TextStyle(
+                          color: Color(0xff5C5C62),
+                          fontSize: 54.sp,
+                          fontWeight: FontWeight.w100,
+                          fontFamily: 'SfProBold',
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 50.h,
+                      left: 60.w,
+                      child: SizedBox(
+                        height: 150.h,
+                        width: 150.w,
+                        child: const Placeholder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
               ),
               buildClimateItems(context, 'AC', Icons.ac_unit_outlined, () {}),
               SizedBox(
@@ -106,7 +154,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
             width: 300.w,
             height: 300.h,
             decoration: BoxDecoration(
-            color: Colors.transparent,
+              color: Colors.transparent,
               borderRadius: BorderRadius.all(
                 Radius.circular(50.r),
               ),
@@ -232,27 +280,35 @@ class _ClimateScreenState extends State<ClimateScreen> {
           // filter for the blur glass like effect
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
 
-          child: Container(
+          child: GlassmorphicContainer(
             margin: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
             height: 144.h,
             width: 390.w,
             // margin:
             //     const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
-              borderRadius: BorderRadius.all(
-                Radius.circular(40.r),
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft,
-                colors: [
-                  Color(0xff2FB8FF).withOpacity(0.3),
-                  Colors.white.withOpacity(0.2),
-                ],
-                stops: const [0.2, 1.0],
-              ),
+            blur: 1,
+            //--code to remove border
+            border: 0,
+            shape: BoxShape.circle,
+            // Color(0xff2FB8FF).withOpacity(0.3),
+            // Colors.white.withOpacity(0.2),
+            linearGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.2),
+                const Color(0xff2FB8FF).withOpacity(0.3),
+              ],
             ),
+            borderGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.2),
+                Colors.blue.withOpacity(0.3),
+              ],
+            ),
+            borderRadius: 40.r,
             child: Column(
               children: [
                 SizedBox(
@@ -271,18 +327,19 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           center: Alignment.topCenter,
                           stops: [.5, 1],
                           colors: [
-                           Color(0xff2FB8FF),
-                           Color(0xff9EECD9),
+                            Color(0xff2FB8FF),
+                            Color(0xff9EECD9),
                           ],
                         ).createShader(bounds),
                         child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.power_settings_new,
-                              color: const Color(0xffEBEBF5).withOpacity(0.6),
-                              size: 30,
-                            ),
-                      ),),
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.power_settings_new,
+                            color: const Color(0xffEBEBF5).withOpacity(0.6),
+                            size: 30,
+                          ),
+                        ),
+                      ),
                       IconButton(
                         onPressed: () {},
                         icon: Icon(
@@ -292,7 +349,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                       ),
                       Text(
-                        value+'°',
+                        value + '°',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 34.sp,
@@ -321,7 +378,8 @@ class _ClimateScreenState extends State<ClimateScreen> {
                 ),
                 // a row with text on or off and a text value both at the other side of things
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 35.0.w,vertical: 25.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 35.0.w, vertical: 25.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -518,4 +576,35 @@ class MyPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class RPSCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
+    paint_0_fill.shader = ui.Gradient.linear(
+        Offset(size.width * 0.6633027, size.height * 0.6916617),
+        Offset(size.width * 0.3286647, size.height * 0.3173205),
+        [Color(0xff101113).withOpacity(1), Color(0xff2B2F33).withOpacity(1)],
+        [0, 1]);
+    canvas.drawCircle(Offset(size.width * 0.4988190, size.height * 0.4988190),
+        size.width * 0.2495614, paint_0_fill);
+
+    Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
+    paint_1_fill.color = Color(0xff32363B).withOpacity(1.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.3234421, size.height * 0.3234421,
+                size.width * 0.3538487, size.height * 0.3538487),
+            bottomRight: Radius.circular(size.width * 0.1769243),
+            bottomLeft: Radius.circular(size.width * 0.1769243),
+            topLeft: Radius.circular(size.width * 0.1769243),
+            topRight: Radius.circular(size.width * 0.1769243)),
+        paint_1_fill);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
 }

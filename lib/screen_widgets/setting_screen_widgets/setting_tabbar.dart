@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:test1/screen/charging_screen.dart';
-import 'package:test1/screen/climate_screen.dart';
-import 'package:test1/screen/look_screen.dart';
+import 'package:test1/screen/home_screen.dart';
 
 Widget settingTabBar(BuildContext context) {
   Color selectedColor = const Color(0xffEBEBF5).withOpacity(0.6);
@@ -55,7 +52,7 @@ Widget settingTabBar(BuildContext context) {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return const LockScreen();
+                    return const HomeScreen(currentScreen: 0);
                   },
                 ),
               );
@@ -69,7 +66,7 @@ Widget settingTabBar(BuildContext context) {
           IconButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const ClimateScreen();
+                return const HomeScreen(currentScreen: 2);
               }));
             },
             icon: Icon(
@@ -82,7 +79,7 @@ Widget settingTabBar(BuildContext context) {
             onPressed: () {
               //navigate to the homeScreen
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const ChargingScreen();
+                return const HomeScreen(currentScreen: 1);
               }));
             },
             icon: Icon(

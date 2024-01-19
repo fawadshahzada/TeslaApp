@@ -25,6 +25,7 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
       children: [
         Expanded(
           child: SizedBox(
+            width: 100.w,
             child: Center(
               child: Text(
                 text,
