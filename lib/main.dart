@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:test1/models/charging_provider.dart';
 import 'package:test1/screen/look_screen.dart';
 import 'models/home_providers.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => HomeProvider()),
+          ChangeNotifierProvider(create: (context) => ChargingProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

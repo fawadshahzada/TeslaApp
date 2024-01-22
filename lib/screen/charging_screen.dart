@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:test1/common_widget/setting_button.dart';
-
+import 'package:test1/models/charging_provider.dart';
+import 'dart:ui' as ui;
 import '../common_widget/custom_appbar.dart';
 import '../repository/nearby_chargers_list.dart';
 
@@ -42,7 +44,7 @@ class _ChargingScreenState extends State<ChargingScreen>
               SizedBox(
                 height: 30.h,
               ),
-              customAppBar(context,'CHARGING'),
+              customAppBar(context, 'CHARGING'),
               // animated image and container size
               SizedBox(
                 height: 350.h,
@@ -349,6 +351,43 @@ class _ChargingScreenState extends State<ChargingScreen>
                         ),
                       ),
                     ),
+                    Consumer<ChargingProvider>(builder: (BuildContext context, watch, Widget? child) {
+                      return Positioned(
+                        top: 305.h,
+                        right: watch.sliderValue.w,
+                        child: Draggable<double>(
+                          axis: Axis.horizontal,
+                          feedback: SizedBox(
+                            height: 47.h,
+                            width: 43.w,
+                            child: CustomPaint(
+                              size: const Size(47, 43),
+                              painter: RPSCustomPainter(),
+                            ),
+                          ),
+                          child: SizedBox(
+                            height: 47.h,
+                            width: 43.w,
+                            child: CustomPaint(
+                              size: const Size(47, 43),
+                              painter: RPSCustomPainter(),
+                            ),
+                          ),
+                          onDragUpdate: (details) {
+                            setState(() {
+                              print('details primary delta: ${details.primaryDelta})');
+                              // Update the position based on drag update
+                              watch.sliderValue -= details.primaryDelta ==null ? 0.0 : details.primaryDelta!;
+                              // Ensure the position stays within the desired range (10 to 105)
+                              watch.sliderValue = watch.sliderValue;
+                            });
+                          },
+                        ),
+                      );
+                    },
+
+                    ),
+
                     // set charge limit text
                     Positioned(
                       top: 330.h,
@@ -421,7 +460,6 @@ class _ChargingScreenState extends State<ChargingScreen>
                         color: Colors.black.withOpacity(0.4),
                         inset: true,
                       ),
-
                     ],
                   ),
                   child: Container(
@@ -476,49 +514,58 @@ class _ChargingScreenState extends State<ChargingScreen>
                           SizedBox(
                             height: isExpanded ? 10.h : 0.h,
                           ),
-                          SizedBox(
-                            height: isExpanded ? 175.h : 0.h,
-                            width: 297.w,
-                            child: ListView(
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                    'Tesla Supercharger -',
-                                    style: TextStyle(
-                                      color: const Color(0xffEBEBF5)
-                                          .withOpacity(0.6),
-                                    ),
+                          SingleChildScrollView(
+                            child: Card(
+                              elevation: 0,
+                              color: Colors.transparent,
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  color: Colors.transparent,
+                                  height: isExpanded ? 175.h : 0.h,
+                                  width: 297.w,
+                                  child: ListView(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          'Tesla Supercharger -',
+                                          style: TextStyle(
+                                            color: const Color(0xffEBEBF5)
+                                                .withOpacity(0.6),
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          'Montreal, QC\n 2 / 4 available',
+                                          style: TextStyle(
+                                            color: const Color(0xffEBEBF5)
+                                                .withOpacity(0.6),
+                                          ),
+                                        ),
+                                        isThreeLine: true,
+                                        trailing: tailingCommon(),
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      ListTile(
+                                        title: Text(
+                                          'Tesla Supercharger -',
+                                          style: TextStyle(
+                                            color: const Color(0xffEBEBF5)
+                                                .withOpacity(0.6),
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          'Montreal, QC\n 2 / 4 available',
+                                          style: TextStyle(
+                                            color: const Color(0xffEBEBF5)
+                                                .withOpacity(0.6),
+                                          ),
+                                        ),
+                                        isThreeLine: true,
+                                        trailing: tailingCommon(),
+                                      ),
+                                    ],
                                   ),
-                                  subtitle: Text(
-                                    'Montreal, QC\n 2 / 4 available',
-                                    style: TextStyle(
-                                      color: const Color(0xffEBEBF5)
-                                          .withOpacity(0.6),
-                                    ),
-                                  ),
-                                  isThreeLine: true,
-                                  trailing: tailingCommon(),
                                 ),
-                                SizedBox(height: 10.h),
-                                ListTile(
-                                  title: Text(
-                                    'Tesla Supercharger -',
-                                    style: TextStyle(
-                                      color: const Color(0xffEBEBF5)
-                                          .withOpacity(0.6),
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    'Montreal, QC\n 2 / 4 available',
-                                    style: TextStyle(
-                                      color: const Color(0xffEBEBF5)
-                                          .withOpacity(0.6),
-                                    ),
-                                  ),
-                                  isThreeLine: true,
-                                  trailing: tailingCommon(),
-                                ),
-                              ],
+                              ),
                             ),
                           )
                         ],
@@ -532,5 +579,35 @@ class _ChargingScreenState extends State<ChargingScreen>
         ),
       ),
     );
+  }
+}
+
+//Copy this CustomPainter code to the Bottom of the File
+class RPSCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Path path_0 = Path();
+    path_0.moveTo(17.3595.w, 20.9571.h);
+    path_0.lineTo(24.9323.w, 8.56532.h);
+    path_0.cubicTo(
+        25.6774.w, 7.34611.h, 27.4236.w, 7.2789.h, 28.2602.w, 8.43724.h);
+    path_0.lineTo(37.2098.w, 20.829);
+    path_0.cubicTo(38.1651.w, 22.1517.h, 37.22.w, 24.h, 35.5885.w, 24.h);
+    path_0.lineTo(19.0661.w, 24.h);
+    path_0.cubicTo(17.5043.w, 24, 16.5451.h, 22.2898.w, 17.3595.h, 20.9571.w);
+    path_0.close();
+
+    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
+    paint_0_fill.shader = ui.Gradient.linear(
+        Offset(size.width * 0.5851064, size.height * 0.1395349),
+        Offset(size.width * 0.5851064, size.height * 0.5581395),
+        [Color(0xff2FB8FF).withOpacity(1), Color(0xff9EECD9).withOpacity(1)],
+        [0, 1]);
+    canvas.drawPath(path_0, paint_0_fill);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
