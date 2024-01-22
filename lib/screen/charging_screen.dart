@@ -408,14 +408,14 @@ class _ChargingScreenState extends State<ChargingScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        offset: Offset(4, 8),
+                        offset: const Offset(4, 8),
                         blurRadius: 5,
                         spreadRadius: -20,
                         color: Colors.black.withOpacity(0.2),
                         inset: true,
                       ),
                       BoxShadow(
-                        offset: Offset(4, 8),
+                        offset: const Offset(4, 8),
                         blurRadius: 10,
                         spreadRadius: -5,
                         color: Colors.black.withOpacity(0.4),

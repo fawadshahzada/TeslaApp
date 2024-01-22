@@ -10,7 +10,9 @@ class HomeProvider extends ChangeNotifier{
   int get currentIndex => _currentIndex;
 
   set changeIndex(int index) {
+    print(index);
     _currentIndex = index;
+    notifyListeners();
   }
   Widget get currentScreen{
   if(_currentIndex == 0){

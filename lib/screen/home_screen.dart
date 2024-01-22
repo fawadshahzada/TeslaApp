@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:provider/provider.dart';
+import 'package:test1/screen/charging_screen.dart';
+import 'package:test1/screen/climate_screen.dart';
+import 'package:test1/screen/setting_screen.dart';
 import '../models/home_providers.dart';
+import 'look_screen.dart';
+
 
 class HomeScreen extends StatelessWidget {
   final int currentScreen;
@@ -12,16 +17,22 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> screens = [
+      const SettingScreen(),
+      const ChargingScreen(),
+      const ClimateScreen(),
+      const LockScreen(),
+    ];
     return Scaffold(
       body: Stack(
         children: [
           PageView.builder(
-            itemCount: 4,
+            itemCount: screens.length,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Consumer<HomeProvider>(
                 builder: (context, watch, child) {
-                  return watch.currentScreen;
+                  return screens[watch.currentIndex];
                 },
               );
             },
@@ -32,41 +43,30 @@ class HomeScreen extends StatelessWidget {
               builder: (context, watch, child) {
                 return ClipPath(
                   clipper: BottomAppBarClipper(),
-                  child: Container(
+                  child: GlassmorphicContainer(
                     height: 78.h,
-                    width: 390.w,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff18191b),
-                      // border top layer color
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10.r),
-                        topRight: Radius.circular(10.r),
-                      ),
-                      border: Border.all(
-                        color: const Color(0xff000000).withOpacity(0.4),
-                        width: 0.5,
-                      ),
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xff000000).withOpacity(1),
-                          const Color(0xff000000).withOpacity(0.9),
-                        ],
-                        stops: const [0.0, 0.1],
-                        begin: Alignment.bottomRight,
-                        end: Alignment.bottomLeft,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xff000000).withOpacity(0.4),
-                          blurRadius: 20,
-                          offset: const Offset(0, 0),
-                        ),
+                    width: double.maxFinite,
+                    borderRadius: 10.r,
+                    blur: 10,
+                    alignment: Alignment.center,
+                    border: 2,
+                    borderGradient: LinearGradient(
+                      colors: [
+                        const Color(0xffFFFFFF).withOpacity(0.1),
+                        const Color(0xffFFFFFF).withOpacity(0.05),
+                      ],
+                    ),
+                    linearGradient: LinearGradient(
+                      colors: [
+                        const Color(0xffFFFFFF).withOpacity(0.07),
+                        const Color(0xff000000).withOpacity(0.05),
                       ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         IconButton(
+                          highlightColor: const Color(0xff4d8599),
                           onPressed: () {
                             watch.changeIndex = 0;
                           },
@@ -77,6 +77,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          highlightColor: const Color(0xff4d8599),
                           onPressed: () {
                             watch.changeIndex = (1);
                           },
@@ -90,6 +91,8 @@ class HomeScreen extends StatelessWidget {
                           width: 40.w,
                         ),
                         IconButton(
+                          highlightColor: const Color(0xff4d8599),
+                          splashRadius: 40.r,
                           onPressed: () {
                             watch.changeIndex = (2);
                           },
@@ -100,8 +103,10 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         IconButton(
+                          highlightColor: const Color(0xff4d8599),
                           onPressed: () {
-                            watch.changeIndex = (3);
+                            // navigate to the lock screen
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LockScreen()), (route) => false);
                           },
                           icon: Icon(
                             Icons.person,
@@ -117,53 +122,66 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 55.h,
-            right: 335/2.w,
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-              padding: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: const Color(0xffffffff),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xff000000).withOpacity(0.4),
-                    blurRadius: 20,
-                    offset: const Offset(0, 0),
-                    inset: false,
-                  ),
+            bottom: 65.h,
+            right: 155.w,
+            child: GlassmorphicContainer(
+              height: 80.h,
+              width: 80.w,
+              borderRadius: 45.r,
+              blur:20,
+              border: 1,
+              borderGradient: LinearGradient(
+                colors: [
+                  const Color(0xffFFFFFF).withOpacity(0.1),
+                  const Color(0xffFFFFFF).withOpacity(0.05),
                 ],
               ),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff18191b),
-                  shape: const CircleBorder(),
-                  elevation: 50,
-                ),
-                child: ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    // make the icon color white and grey
-                    return LinearGradient(
-                      colors: <Color>[
-                        Color(0xff9EECD9).withOpacity(.9),
-                        Color(0xff9EECD9).withOpacity(.4),
-                      ],
-                      stops: <double>[0.0, 1.0],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Center(
-                      child: Icon(
-                        Icons.add,
-                        size: 40.r,
+              linearGradient: LinearGradient(
+                colors: [
+                  const Color(0xffFFFFFF).withOpacity(0.01),
+                  const Color(0xff000000).withOpacity(0.05),
+                ],
+                stops: const [
+                  0.1,
+                  1,
+                ],
+              ),
+
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 14.h,
+                    left: -7.w,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:Colors.transparent,
+                        shape: const CircleBorder(),
+                        elevation: 0,
+                      ),
+                      child: Center(
+                        child: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              colors: [
+                                Color(0xff2FB8FF),
+                                Color(0xff9EECD9),
+                              ],
+                              tileMode: TileMode.clamp,
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ).createShader(bounds);
+                          },
+                          child: Icon(
+                            Icons.add,
+                            size: 50.r,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
             ),
           )
@@ -173,28 +191,29 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class BottomAppBarClipper extends CustomClipper<Path> {
+  class BottomAppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
     // smooth transition to the following cut using quadratic bezier
-    path.moveTo(0, 35.2235);
-    path.cubicTo(0, 31.8714, 1.29483, 28.6489, 3.61415, 26.2287);
-    path.lineTo(16.3492, 12.94);
-    path.cubicTo(24.2708, 4.67391, 35.2237, 0, 46.6727, 0);
-    path.lineTo(124.328, 0);
-    path.cubicTo(132.903, 0, 141.273, 2.62492, 148.313, 7.52198);
-    path.lineTo(169.302, 22.1232);
-    path.cubicTo(184.749, 32.8689, 205.251, 32.8689, 220.698, 22.1232);
-    path.lineTo(241.687, 7.52198);
-    path.cubicTo(248.727, 2.62491, 257.097, 0, 265.672, 0);
-    path.lineTo(343.327, 0);
-    path.cubicTo(354.776, 0, 365.729, 4.67391, 373.651, 12.94);
-    path.lineTo(386.386, 26.2287);
-    path.cubicTo(388.705, 28.6489, 390, 31.8714, 390, 35.2235);
-    path.lineTo(390, 78);
-    path.lineTo(0, 78);
-    path.lineTo(0, 35.2235);
+    path.moveTo(0, 35.2235.h);
+    path.cubicTo(0, 31.8714.h, 1.29483.w, 28.6489.h, 3.61415.w, 26.2287.h);
+    path.lineTo(16.3492.w, 12.94.h);
+    path.cubicTo(24.2708.w, 4.67391.h, 35.2237.w, 0, 46.6727.w, 0);
+    path.lineTo(124.328.w, 0);
+    path.cubicTo(132.903.w, 0, 141.273.w, 2.62492.h, 148.313.w, 7.52198.h);
+    path.lineTo(169.302.w, 22.1232.h);
+    path.cubicTo(
+        184.749.w, 32.8689.h, 205.251.w, 32.8689.h, 220.698.w, 22.1232.h);
+    path.lineTo(241.687.w, 7.52198.h);
+    path.cubicTo(248.727.w, 2.62491.h, 257.097.w, 0, 265.672.w, 0);
+    path.lineTo(343.327.w, 0);
+    path.cubicTo(354.776.w, 0, 365.729.w, 4.67391.h, 373.651.w, 12.94.h);
+    path.lineTo(386.386.w, 26.2287.h);
+    path.cubicTo(388.705.w, 28.6489.h, 390.w, 31.8714.h, 390.w, 35.2235.h);
+    path.lineTo(390.w, 78.h);
+    path.lineTo(0, 78.h);
+    path.lineTo(0, 35.2235.h);
     path.close();
     return path;
   }

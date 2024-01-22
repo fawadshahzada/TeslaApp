@@ -1,6 +1,6 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,81 +34,91 @@ class _ClimateScreenState extends State<ClimateScreen> {
               ],
             ),
           ),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 30.h,
-              ),
-              customAppBar(context, 'CLIMATE'),
-              SizedBox(
-                height: 0.h,
-              ),
-              SizedBox(
-                height: 300.h,
-                width: 300.w,
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          // drop shadow effect to the top left
-                          BoxShadow(
-                            color: const Color(0xffffffff).withOpacity(0.1),
-                            spreadRadius: -60,
-                            blurRadius: 10,
-                            offset: const Offset(-4, -8),
-                          ),
-                        ],
-                      ),
-                      child: CustomPaint(
-                        size: Size(370, (370*1).toDouble()), //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
-                        painter: RPSCustomPainter(),
-                      ),
-                    ),
-                    // positioned text in the center of the circle
-                    Positioned(
-                      top: 110.h,
-                      left: 110.w,
-                      child: Text(
-                        '22°',
-                        style: TextStyle(
-                          color: Color(0xff5C5C62),
-                          fontSize: 54.sp,
-                          fontWeight: FontWeight.w100,
-                          fontFamily: 'SfProBold',
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 30.h,
+                ),
+                customAppBar(context, 'CLIMATE'),
+                SizedBox(
+                  height: 0.h,
+                ),
+                SizedBox(
+                  height: 300.h,
+                  width: 300.w,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            // drop shadow effect to the top left
+                            BoxShadow(
+                              color: const Color(0xffffffff).withOpacity(0.1),
+                              spreadRadius: -60,
+                              blurRadius: 10,
+                              offset: const Offset(-4, -8),
+                            ),
+                          ],
+                        ),
+                        child: CustomPaint(
+                          size: Size(370.w, (370.w * 1).toDouble()),
+                          //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
+                          painter: RPSCustomPainter(),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 50.h,
-                      left: 60.w,
-                      child: SizedBox(
-                        height: 150.h,
-                        width: 150.w,
-                        child: const Placeholder(),
+                      // positioned text in the center of the circle
+                      Positioned(
+                        top: 110.h,
+                        left: 110.w,
+                        child: Text(
+                          '22°',
+                          style: TextStyle(
+                            color: const Color(0xff5C5C62),
+                            fontSize: 54.sp,
+                            fontWeight: FontWeight.w100,
+                            fontFamily: 'SfProBold',
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        top: 75.h,
+                        left: 75.w,
+                        child: SizedBox(
+                          height: 150.h,
+                          width: 150.w,
+                          child: MyIndicator(
+                            value: 1,
+                            size: 90,
+                            strokeWidth: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20.h,
-              ),
-              buildClimateItems(context, 'AC', Icons.ac_unit_outlined, () {}),
-              SizedBox(
-                height: 40.h,
-              ),
-              buildClimateItems(context, 'Fan', Icons.air, () {}),
-              SizedBox(
-                height: 40.h,
-              ),
-              buildClimateItems(context, 'Heat', Icons.arrow_circle_up, () {}),
-              SizedBox(
-                height: 40.h,
-              ),
-              buildClimateItems(context, 'Auto', Icons.av_timer_sharp, () {}),
-            ],
+                SizedBox(
+                  height: 20.h,
+                ),
+                buildClimateItems(context, 'AC', Icons.ac_unit_outlined, () {}),
+                SizedBox(
+                  height: 40.h,
+                ),
+                buildClimateItems(context, 'Fan', Icons.air, () {}),
+                SizedBox(
+                  height: 40.h,
+                ),
+                buildClimateItems(context, 'Heat', Icons.arrow_circle_up, () {}),
+                SizedBox(
+                  height: 40.h,
+                ),
+                buildClimateItems(context, 'Auto', Icons.av_timer_sharp, () {}),
+                SizedBox(
+                  height: 200.h,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -213,56 +223,62 @@ class _ClimateScreenState extends State<ClimateScreen> {
     );
   }
 
-  Row buildClimateItems(BuildContext context, String text, IconData icon,
+  Padding buildClimateItems(BuildContext context, String text, IconData icon,
       VoidCallback voidCallback) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(
-          text,
-          style: TextStyle(
-            color: const Color(0xffEBEBF5).withOpacity(0.6),
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'SfProBold',
-          ),
-        ),
-        SizedBox(
-          width: 10.w,
-        ),
-        settingButton(context, icon, () {
-          _showBottomSheet(context, '1.0', (value) {});
-        }),
-        SizedBox(
-          width: 10.w,
-        ),
-        // slider with custom indicator
-        SizedBox(
-          width: 192.w,
-          height: 15.h,
-          child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-                // thumb shape should be a rectangle with 50 radius and some custom widgets inside of it
-                overlayShape: const RoundSliderOverlayShape(
-                  overlayRadius: 0,
-                ),
-                overlayColor: Colors.black,
-                // track shape should should be rectangular with rounded borders and shadow effect
-                trackShape: const RoundedRectSliderTrackShape(),
-                trackHeight: 6,
-                thumbShape: RectSliderThumbShape()),
-            child: Slider(
-              activeColor: const Color(0xff2FB8FF).withOpacity(0.7),
-              inactiveColor: Colors.black.withOpacity(0.2),
-              thumbColor: Colors.black,
-              value: 0.2,
-              onChanged: (value) {},
-              allowedInteraction: SliderInteraction.slideThumb,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30.w),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              text,
+              style: TextStyle(
+                color: const Color(0xffEBEBF5).withOpacity(0.6),
+                fontSize: 17.sp,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'SfProBold',
+              ),
             ),
           ),
-        ),
-      ],
+          Expanded(
+            flex: 3,
+            child: settingButton(context, icon, () {
+              _showBottomSheet(context, '1.0', (value) {});
+            }),
+          ),
+          // slider with custom indicator
+          Expanded(
+            flex: 7,
+            child: SizedBox(
+              width: 192.w,
+              height: 15.h,
+              child: SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                    // thumb shape should be a rectangle with 50 radius and some custom widgets inside of it
+                    overlayShape: const RoundSliderOverlayShape(
+                      overlayRadius: 0,
+                    ),
+                    overlayColor: Colors.black,
+                    // track shape should should be rectangular with rounded borders and shadow effect
+                    trackShape: const RoundedRectSliderTrackShape(),
+                    trackHeight: 6,
+                    thumbShape: RectSliderThumbShape()),
+                child: Slider(
+                  activeColor: const Color(0xff2FB8FF).withOpacity(0.7),
+                  inactiveColor: Colors.black.withOpacity(0.2),
+                  thumbColor: Colors.black,
+                  value: 0.2,
+                  onChanged: (value) {},
+                  allowedInteraction: SliderInteraction.slideThumb,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -411,6 +427,80 @@ class _ClimateScreenState extends State<ClimateScreen> {
       },
     );
   }
+
+  Widget MyIndicator({
+    required double value,
+    required double size,
+    required double strokeWidth,
+  }) {
+    return CustomPaint(
+      painter: MyIndicatorPainter(
+        value: value,
+        size: size,
+        strokeWidth: strokeWidth,
+        color: [
+          Color(0xff9EECD9),
+          Color(0xff9EECD9),
+          Color(0xff2FB8FF),
+          Color(0xff2FB8FF),
+        ],
+      ),
+    );
+  }
+}
+
+class MyIndicatorPainter extends CustomPainter {
+  final double value;
+  final double size;
+  final double strokeWidth;
+  final List<Color> color;
+
+  MyIndicatorPainter({
+    required this.value,
+    required this.size,
+    required this.strokeWidth,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    final double radius = size.width / 2;
+    final Offset center = Offset(size.width / 2, size.height / 2);
+
+    final Rect rect = Rect.fromCircle(center: center, radius: radius);
+
+    const double startAngle = -pi / 2;
+    final double sweepAngle = 2 * pi * value;
+
+    final Gradient gradient = SweepGradient(
+      startAngle: 0,
+      endAngle: 2 * pi,
+      colors: color,
+    );
+
+    final Rect rect2 = Rect.fromCircle(center: center, radius: radius);
+
+    final Gradient gradient2 = SweepGradient(
+      startAngle: 0,
+      endAngle: 2 * pi,
+      colors: color,
+    );
+
+    canvas.drawArc(rect, startAngle, sweepAngle, false,
+        paint..shader = gradient.createShader(rect2));
+
+    canvas.drawArc(rect, startAngle, sweepAngle, false,
+        paint..shader = gradient2.createShader(rect2));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 class RectSliderThumbShape extends SliderComponentShape {
@@ -497,8 +587,9 @@ class RectSliderThumbShape extends SliderComponentShape {
     final double evaluatedElevation =
         elevationTween.evaluate(activationAnimation);
     final Path path = Path()
-      ..addOval(Rect.fromCenter(
-          center: center, width: 2 * radius, height: 3 * radius));
+      ..addOval(
+        Rect.fromCenter(center: center, width: 2 * radius, height: 3 * radius),
+      );
 
     bool paintShadows = true;
     assert(() {
@@ -525,53 +616,80 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Get the center of the canvas
-    final center = Offset(size.width / 2, size.height / 2);
 
-    // Draw the gray background seen on the progress indicator
-    // This will act as the background layer.
-    canvas.drawCircle(
-      center,
-      85,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..color = Colors.black12
-        ..strokeWidth = 30,
-    );
+    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
+    paint_0_fill.shader = ui.Gradient.linear(
+        Offset(size.width * 0.3046875, size.height * 0.3285714),
+        Offset(size.width * 0.6138444, size.height * 0.6712032),
+        [Color(0xff2E3236).withOpacity(1), Color(0xff141515).withOpacity(1)],
+        [0, 1]);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
+                size.width * 0.3819444, size.height * 0.2698413),
+            bottomRight: Radius.circular(size.width * 0.08333333),
+            bottomLeft: Radius.circular(size.width * 0.08333333),
+            topLeft: Radius.circular(size.width * 0.08333333),
+            topRight: Radius.circular(size.width * 0.08333333)),
+        paint_0_fill);
 
-    // Create a new layer where we will be painting the
-    // actual progress indicator
-    canvas.saveLayer(
-      Rect.fromCenter(center: center, width: 200, height: 200),
-      Paint(),
-    );
+    Paint paint_1_stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    paint_1_stroke.color = Color(0xff212325).withOpacity(1.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
+                size.width * 0.3819444, size.height * 0.2698413),
+            bottomRight: Radius.circular(size.width * 0.08333333),
+            bottomLeft: Radius.circular(size.width * 0.08333333),
+            topLeft: Radius.circular(size.width * 0.08333333),
+            topRight: Radius.circular(size.width * 0.08333333)),
+        paint_1_stroke);
 
-    //Draw the light green portion of the progress indicator
-    canvas.drawArc(
-      Rect.fromCenter(center: center, width: 170, height: 170),
-      0,
-      10,
-      false,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round
-        ..color = Colors.green[100]!
-        ..strokeWidth = 30,
-    );
+    Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
+    paint_1_fill.color = Color(0xff000000).withOpacity(1.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
+                size.width * 0.3819444, size.height * 0.2698413),
+            bottomRight: Radius.circular(size.width * 0.08333333),
+            bottomLeft: Radius.circular(size.width * 0.08333333),
+            topLeft: Radius.circular(size.width * 0.08333333),
+            topRight: Radius.circular(size.width * 0.08333333)),
+        paint_1_fill);
 
-    // canvas.drawArc(
-    //   Rect.fromCenter(center: center, width: 155, height: 155),
-    //   0,
-    //   360,
-    //   false,
-    //   Paint()
-    //     ..style = PaintingStyle.stroke
-    //     ..strokeCap = StrokeCap.round
-    //     ..color = Colors.green
-    //     ..strokeWidth = 15
-    //     ..blendMode = BlendMode.srcIn,
-    // );
-    // we fatten the layer
-    canvas.restore();
+    Path path_2 = Path();
+    path_2.moveTo(29, 22);
+    path_2.cubicTo(29, 21.4477, 29.4477, 21, 30, 21);
+    path_2.lineTo(31.75, 21);
+    path_2.cubicTo(32.3023, 21, 32.75, 21.4477, 32.75, 22);
+    path_2.lineTo(32.75, 33);
+    path_2.cubicTo(32.75, 33.5523, 32.3023, 34, 31.75, 34);
+    path_2.lineTo(30, 34);
+    path_2.cubicTo(29.4477, 34, 29, 33.5523, 29, 33);
+    path_2.lineTo(29, 22);
+    path_2.close();
+
+    Paint paint_2_fill = Paint()..style = PaintingStyle.fill;
+    paint_2_fill.color = Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_2, paint_2_fill);
+
+    Path path_3 = Path();
+    path_3.moveTo(34.75, 22);
+    path_3.cubicTo(34.75, 21.4477, 35.1977, 21, 35.75, 21);
+    path_3.lineTo(37.5, 21);
+    path_3.cubicTo(38.0523, 21, 38.5, 21.4477, 38.5, 22);
+    path_3.lineTo(38.5, 33);
+    path_3.cubicTo(38.5, 33.5523, 38.0523, 34, 37.5, 34);
+    path_3.lineTo(35.75, 34);
+    path_3.cubicTo(35.1977, 34, 34.75, 33.5523, 34.75, 33);
+    path_3.lineTo(34.75, 22);
+    path_3.close();
+
+    Paint paint_3_fill = Paint()..style = PaintingStyle.fill;
+    paint_3_fill.color = Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_3, paint_3_fill);
   }
 
   @override

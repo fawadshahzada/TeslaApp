@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:test1/screen/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:test1/screen/look_screen.dart';
+
+import '../../models/home_providers.dart';
 
 Widget settingTabBar(BuildContext context) {
   Color selectedColor = const Color(0xffEBEBF5).withOpacity(0.6);
   Color unselectedColor = const Color(0xffEBEBF5).withOpacity(0.3);
+  var homeProvider  = Provider.of<HomeProvider>(context);
   return Material(
     borderRadius: BorderRadius.circular(50.r),
     elevation: 30,
@@ -52,7 +56,7 @@ Widget settingTabBar(BuildContext context) {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return const HomeScreen(currentScreen: 0);
+                    return const LockScreen();
                   },
                 ),
               );
@@ -65,9 +69,8 @@ Widget settingTabBar(BuildContext context) {
           ),
           IconButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const HomeScreen(currentScreen: 2);
-              }));
+              homeProvider.changeIndex = 2;
+
             },
             icon: Icon(
               FontAwesomeIcons.fan,
@@ -78,9 +81,8 @@ Widget settingTabBar(BuildContext context) {
           IconButton(
             onPressed: () {
               //navigate to the homeScreen
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const HomeScreen(currentScreen: 1);
-              }));
+              homeProvider.changeIndex = 1;
+
             },
             icon: Icon(
               Icons.electric_bolt_sharp,
@@ -89,7 +91,10 @@ Widget settingTabBar(BuildContext context) {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              //navigate to the homeScreen
+             homeProvider.changeIndex = 0;
+            },
             icon: Icon(
               FontAwesomeIcons.carSide,
               color: selectedColor,
