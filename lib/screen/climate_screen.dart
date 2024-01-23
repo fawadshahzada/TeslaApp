@@ -612,7 +612,7 @@ class RectSliderThumbShape extends SliderComponentShape {
     canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_1_stroke);
 
     Paint paint_1_fill = Paint()..style=PaintingStyle.fill;
-    paint_1_fill.color = Color(0xff000000).withOpacity(1.0);
+    paint_1_fill.color = const Color(0xff000000).withOpacity(1.0);
     canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_1_fill);
 
     Path path_2 = Path();
