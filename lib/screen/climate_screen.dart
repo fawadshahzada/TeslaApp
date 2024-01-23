@@ -625,9 +625,9 @@ class RectSliderThumbShape extends SliderComponentShape {
     path_3.lineTo(34.75.w,22.h);
     path_3.close();
 
-    Paint paint_3_fill = Paint()..style=PaintingStyle.fill;
-    paint_3_fill.color = const Color(0xff272A2E).withOpacity(1.0);
-    canvas.drawPath(path_3,paint_3_fill);
+    Paint paint3Fill = Paint()..style=PaintingStyle.fill;
+    paint3Fill.color = const Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_3,paint3Fill);
 
   }
 }
