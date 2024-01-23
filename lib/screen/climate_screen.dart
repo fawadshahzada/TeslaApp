@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:provider/provider.dart';
 import 'package:test1/common_widget/custom_appbar.dart';
 import 'package:test1/common_widget/setting_button.dart';
+import 'package:test1/models/climate_provider.dart';
 
 class ClimateScreen extends StatefulWidget {
   const ClimateScreen({super.key});
@@ -69,16 +71,22 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                       ),
                       // positioned text in the center of the circle
-                      Positioned(
-                        top: 110.h,
-                        left: 110.w,
-                        child: Text(
-                          '22°',
-                          style: TextStyle(
-                            color: const Color(0xff5C5C62),
-                            fontSize: 54.sp,
-                            fontWeight: FontWeight.w100,
-                            fontFamily: 'SfProBold',
+                      Consumer<ClimateProvider>(
+                        builder: (context, value, child) => Positioned(
+                          top: 120.h,
+                          left: 103.w,
+                          child: Container(
+                            width: 100.w,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${((double.tryParse(value.acSliderValue.toString())??0.0)*100).toStringAsFixed(0)}°',
+                              style: TextStyle(
+                                color: const Color(0xff5C5C62),
+                                fontSize: 45.sp,
+                                fontWeight: FontWeight.w100,
+                                fontFamily: 'SfProBold',
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -88,10 +96,12 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         child: SizedBox(
                           height: 150.h,
                           width: 150.w,
-                          child: MyIndicator(
-                            value: 1,
-                            size: 90,
-                            strokeWidth: 20,
+                          child: Consumer<ClimateProvider>(
+                            builder: (context, value, child) => myIndicator(
+                              value: value.acSliderValue,
+                              size: 120,
+                              strokeWidth: 18,
+                            ),
                           ),
                         ),
                       ),
@@ -101,22 +111,52 @@ class _ClimateScreenState extends State<ClimateScreen> {
                 SizedBox(
                   height: 20.h,
                 ),
-                buildClimateItems(context, 'AC', Icons.ac_unit_outlined, () {}),
-                SizedBox(
-                  height: 40.h,
-                ),
-                buildClimateItems(context, 'Fan', Icons.air, () {}),
-                SizedBox(
-                  height: 40.h,
-                ),
-                buildClimateItems(context, 'Heat', Icons.arrow_circle_up, () {}),
-                SizedBox(
-                  height: 40.h,
-                ),
-                buildClimateItems(context, 'Auto', Icons.av_timer_sharp, () {}),
-                SizedBox(
-                  height: 200.h,
-                ),
+                Consumer<ClimateProvider>(
+                  builder: (context, value, child) =>  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      buildClimateItems(context, 'AC', Icons.ac_unit_outlined, () {
+                        value.acButton();
+                      }, () {
+                        value.acButton();
+                      },value.acButtonON, (sliderValue) {
+                        value.acSlider(sliderValue);
+                      },
+                        value.acSliderValue,
+                      ),
+                      SizedBox(
+                        height: 40.h,
+                      ),
+                      buildClimateItems(context, 'Fan', Icons.air, () {}, () {value.fanButton();},value.fanButtonON, (sliderValue) {
+                        value.fanSlider(sliderValue);
+                      },
+                        value.fanSliderValue,
+                      ),
+                      SizedBox(
+                        height: 40.h,
+                      ),
+                      buildClimateItems(context, 'Heat', Icons.arrow_circle_up, () {}, () {value.heatButton();},value.heatButtonON, (sliderValue) {
+                        value.heatSlider(sliderValue);
+                      },
+                        value.heatSliderValue,
+                      ),
+                      SizedBox(
+                        height: 40.h,
+                      ),
+                      buildClimateItems(context, 'Auto', Icons.av_timer_sharp, () {}, () {value.autoButton();},value.autoButtonON, (sliderValue) {
+                        value.autoSlider(sliderValue);
+                      },
+                        value.autoSliderValue,
+                      ),
+                      SizedBox(
+                        height: 40.h,
+                      ),
+                      Container(
+                        color: Colors.black.withOpacity(0.05),
+                        height: 200.h,
+                      ),
+                    ],
+                  ),),
               ],
             ),
           ),
@@ -224,12 +264,12 @@ class _ClimateScreenState extends State<ClimateScreen> {
   }
 
   Padding buildClimateItems(BuildContext context, String text, IconData icon,
-      VoidCallback voidCallback) {
+      VoidCallback voidCallback,VoidCallback onButtonPressed,bool isOn, Function(double) onSliderChange,double currentValue) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
             flex: 2,
@@ -244,14 +284,15 @@ class _ClimateScreenState extends State<ClimateScreen> {
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: settingButton(context, icon, () {
-              _showBottomSheet(context, '1.0', (value) {});
+              onButtonPressed();
+              _showBottomSheet(context, currentValue.toString(), isOn);
             }),
           ),
           // slider with custom indicator
           Expanded(
-            flex: 7,
+            flex: 9,
             child: SizedBox(
               width: 192.w,
               height: 15.h,
@@ -265,14 +306,17 @@ class _ClimateScreenState extends State<ClimateScreen> {
                     // track shape should should be rectangular with rounded borders and shadow effect
                     trackShape: const RoundedRectSliderTrackShape(),
                     trackHeight: 6,
-                    thumbShape: RectSliderThumbShape()),
+                    thumbShape: const RectSliderThumbShape()),
                 child: Slider(
                   activeColor: const Color(0xff2FB8FF).withOpacity(0.7),
                   inactiveColor: Colors.black.withOpacity(0.2),
                   thumbColor: Colors.black,
-                  value: 0.2,
-                  onChanged: (value) {},
-                  allowedInteraction: SliderInteraction.slideThumb,
+                  value: currentValue,
+                  onChanged: (value) {
+                    print('value: $value');
+                    onSliderChange(value);
+                  },
+                  allowedInteraction: SliderInteraction.tapAndSlide,
                 ),
               ),
             ),
@@ -283,7 +327,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
   }
 
   // bottom sheet function which will be called when the user clicks on the settings button
-  void _showBottomSheet(BuildContext context, String value, onChanged) {
+  void _showBottomSheet(BuildContext context, String value, bool PowerOn) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(40.r)),
@@ -294,14 +338,12 @@ class _ClimateScreenState extends State<ClimateScreen> {
       builder: (context) {
         return BackdropFilter(
           // filter for the blur glass like effect
-          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+          filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
 
           child: GlassmorphicContainer(
             margin: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
-            height: 144.h,
+            height: 150.h,
             width: 390.w,
-            // margin:
-            //     const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
             blur: 1,
             //--code to remove border
             border: 0,
@@ -365,7 +407,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                       ),
                       Text(
-                        value + '°',
+                        '${((double.tryParse(value)??0.0)*100).toStringAsFixed(0)}°',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 34.sp,
@@ -428,7 +470,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
     );
   }
 
-  Widget MyIndicator({
+  Widget myIndicator({
     required double value,
     required double size,
     required double strokeWidth,
@@ -439,10 +481,10 @@ class _ClimateScreenState extends State<ClimateScreen> {
         size: size,
         strokeWidth: strokeWidth,
         color: [
-          Color(0xff9EECD9),
-          Color(0xff9EECD9),
-          Color(0xff2FB8FF),
-          Color(0xff2FB8FF),
+          const Color(0xff9EECD9),
+          const Color(0xff9EECD9),
+          const Color(0xff2FB8FF),
+          const Color(0xff2FB8FF),
         ],
       ),
     );
@@ -504,69 +546,45 @@ class MyIndicatorPainter extends CustomPainter {
 }
 
 class RectSliderThumbShape extends SliderComponentShape {
-  /// Create a slider thumb that draws a Rect.
   const RectSliderThumbShape({
-    this.enabledThumbRadius = 10.0,
+    this.enabledThumbRadius = 0.0,
     this.disabledThumbRadius,
-    this.elevation = 1.0,
+    this.elevation = 10.0,
     this.pressedElevation = 6.0,
   });
 
-  /// The preferred radius of the round thumb shape when the slider is enabled.
-  ///
-  /// If it is not provided, then the Material Design default of 10 is used.
   final double enabledThumbRadius;
-
-  /// The preferred radius of the round thumb shape when the slider is disabled.
-  ///
-  /// If no disabledRadius is provided, then it is equal to the
-  /// [enabledThumbRadius]
   final double? disabledThumbRadius;
 
   double get _disabledThumbRadius => disabledThumbRadius ?? enabledThumbRadius;
 
-  /// The resting elevation adds shadow to the unpressed thumb.
-  ///
-  /// The default is 1.
-  ///
-  /// Use 0 for no shadow. The higher the value, the larger the shadow. For
-  /// example, a value of 12 will create a very large shadow.
-  ///
   final double elevation;
-
-  /// The pressed elevation adds shadow to the pressed thumb.
-  ///
-  /// The default is 6.
-  ///
-  /// Use 0 for no shadow. The higher the value, the larger the shadow. For
-  /// example, a value of 12 will create a very large shadow.
   final double pressedElevation;
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.fromRadius(
-        isEnabled == true ? enabledThumbRadius : _disabledThumbRadius);
+    return Size.fromRadius(isEnabled ? enabledThumbRadius : _disabledThumbRadius);
   }
 
   @override
   void paint(
-    PaintingContext context,
-    Offset center, {
-    required Animation<double> activationAnimation,
-    required Animation<double> enableAnimation,
-    required bool isDiscrete,
-    required TextPainter labelPainter,
-    required RenderBox parentBox,
-    required SliderThemeData sliderTheme,
-    required TextDirection textDirection,
-    required double value,
-    required double textScaleFactor,
-    required Size sizeWithOverflow,
-  }) {
+      PaintingContext context,
+      Offset center, {
+        required Animation<double> activationAnimation,
+        required Animation<double> enableAnimation,
+        required bool isDiscrete,
+        required TextPainter labelPainter,
+        required RenderBox parentBox,
+        required SliderThemeData sliderTheme,
+        required TextDirection textDirection,
+        required double value,
+        required double textScaleFactor,
+        required Size sizeWithOverflow,
+      }) {
     assert(sliderTheme.disabledThumbColor != null);
     assert(sliderTheme.thumbColor != null);
-
-    final Canvas canvas = context.canvas;
+    Size size=Size(72.w, 63.h);
+    final Canvas canvas = context.canvas..translate(center.dx-25, -size.height / 2 + 10);
     final Tween<double> radiusTween = Tween<double>(
       begin: _disabledThumbRadius,
       end: enabledThumbRadius,
@@ -584,12 +602,50 @@ class RectSliderThumbShape extends SliderComponentShape {
       end: pressedElevation,
     );
 
-    final double evaluatedElevation =
-        elevationTween.evaluate(activationAnimation);
-    final Path path = Path()
-      ..addOval(
-        Rect.fromCenter(center: center, width: 2 * radius, height: 3 * radius),
-      );
+    final double evaluatedElevation = elevationTween.evaluate(activationAnimation);
+    Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
+    paint_0_fill.shader = ui.Gradient.linear(Offset(size.width*0.3046875,size.height*0.3285714), Offset(size.width*0.6138444,size.height*0.6712032), [Color(0xff2E3236).withOpacity(1),Color(0xff141515).withOpacity(1)], [0,1]);
+    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_0_fill);
+
+    Paint paint_1_stroke = Paint()..style=PaintingStyle.stroke..strokeWidth=2;
+    paint_1_stroke.color=Color(0xff212325).withOpacity(1.0);
+    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_1_stroke);
+
+    Paint paint_1_fill = Paint()..style=PaintingStyle.fill;
+    paint_1_fill.color = Color(0xff000000).withOpacity(1.0);
+    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_1_fill);
+
+    Path path_2 = Path();
+    path_2.moveTo(29.w,22.h);
+    path_2.cubicTo(29.w,21.4477.h,29.4477.w,21.h,30.w,21.h);
+    path_2.lineTo(31.75.w,21.h);
+    path_2.cubicTo(32.3023.w,21.h,32.75.w,21.4477.h,32.75.w,22.h);
+    path_2.lineTo(32.75.w,33.h);
+    path_2.cubicTo(32.75.w,33.5523,32.3023.w,34.h,31.75.w,34.h);
+    path_2.lineTo(30.w,34.h);
+    path_2.cubicTo(29.4477.w,34.h,29.w,33.5523.h,29.w,33.h);
+    path_2.lineTo(29.w,22.h);
+    path_2.close();
+
+    Paint paint_2_fill = Paint()..style=PaintingStyle.fill;
+    paint_2_fill.color = Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_2,paint_2_fill);
+
+    Path path_3 = Path();
+    path_3.moveTo(34.75.w,22.h);
+    path_3.cubicTo(34.75.w,21.4477.h,35.1977.w,21.h,35.75.w,21.h);
+    path_3.lineTo(37.5.w,21.h);
+    path_3.cubicTo(38.0523.w,21.h,38.5.w,21.4477.h,38.5.w,22.h);
+    path_3.lineTo(38.5.w,33.h);
+    path_3.cubicTo(38.5.w,33.5523.h,38.0523.w,34.h,37.5.w,34.h);
+    path_3.lineTo(35.75.w,34.h);
+    path_3.cubicTo(35.1977.w,34.h,34.75.w,33.5523.h,34.75.w,33.h);
+    path_3.lineTo(34.75.w,22.h);
+    path_3.close();
+
+    Paint paint_3_fill = Paint()..style=PaintingStyle.fill;
+    paint_3_fill.color = const Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_3,paint_3_fill);
 
     bool paintShadows = true;
     assert(() {
@@ -598,17 +654,6 @@ class RectSliderThumbShape extends SliderComponentShape {
       }
       return true;
     }());
-
-    if (paintShadows) {
-      canvas.drawShadow(
-          path, Colors.black.withOpacity(0.4), evaluatedElevation, true);
-    }
-
-    // Use drawRect instead of drawCircle
-    canvas.drawRect(
-      Rect.fromCircle(center: center, radius: radius),
-      Paint()..color = color,
-    );
   }
 }
 
@@ -621,7 +666,7 @@ class MyPainter extends CustomPainter {
     paint_0_fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.3046875, size.height * 0.3285714),
         Offset(size.width * 0.6138444, size.height * 0.6712032),
-        [Color(0xff2E3236).withOpacity(1), Color(0xff141515).withOpacity(1)],
+        [const Color(0xff2E3236).withOpacity(1), const Color(0xff141515).withOpacity(1)],
         [0, 1]);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
@@ -636,7 +681,7 @@ class MyPainter extends CustomPainter {
     Paint paint_1_stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
-    paint_1_stroke.color = Color(0xff212325).withOpacity(1.0);
+    paint_1_stroke.color = const Color(0xff212325).withOpacity(1.0);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
@@ -648,7 +693,7 @@ class MyPainter extends CustomPainter {
         paint_1_stroke);
 
     Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
-    paint_1_fill.color = Color(0xff000000).withOpacity(1.0);
+    paint_1_fill.color = const Color(0xff000000).withOpacity(1.0);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
@@ -660,35 +705,35 @@ class MyPainter extends CustomPainter {
         paint_1_fill);
 
     Path path_2 = Path();
-    path_2.moveTo(29, 22);
-    path_2.cubicTo(29, 21.4477, 29.4477, 21, 30, 21);
-    path_2.lineTo(31.75, 21);
-    path_2.cubicTo(32.3023, 21, 32.75, 21.4477, 32.75, 22);
-    path_2.lineTo(32.75, 33);
-    path_2.cubicTo(32.75, 33.5523, 32.3023, 34, 31.75, 34);
-    path_2.lineTo(30, 34);
-    path_2.cubicTo(29.4477, 34, 29, 33.5523, 29, 33);
-    path_2.lineTo(29, 22);
+    path_2.moveTo(29.w, 22.h);
+    path_2.cubicTo(29.w, 21.4477.h, 29.4477.w, 21.h, 30.w, 21.h);
+    path_2.lineTo(31.75.w, 21.h);
+    path_2.cubicTo(32.3023.w, 21.h, 32.75.w, 21.4477.h, 32.75.w, 22.h);
+    path_2.lineTo(32.75.w, 33.h);
+    path_2.cubicTo(32.75.w, 33.5523.h, 32.3023.w, 34.h, 31.75.w, 34.h);
+    path_2.lineTo(30.w, 34.h);
+    path_2.cubicTo(29.4477.w, 34.h, 29.w, 33.5523.h, 29.w, 33.h);
+    path_2.lineTo(29.w, 22.h);
     path_2.close();
 
     Paint paint_2_fill = Paint()..style = PaintingStyle.fill;
-    paint_2_fill.color = Color(0xff272A2E).withOpacity(1.0);
+    paint_2_fill.color = const Color(0xff272A2E).withOpacity(1.0);
     canvas.drawPath(path_2, paint_2_fill);
 
     Path path_3 = Path();
-    path_3.moveTo(34.75, 22);
-    path_3.cubicTo(34.75, 21.4477, 35.1977, 21, 35.75, 21);
-    path_3.lineTo(37.5, 21);
-    path_3.cubicTo(38.0523, 21, 38.5, 21.4477, 38.5, 22);
-    path_3.lineTo(38.5, 33);
-    path_3.cubicTo(38.5, 33.5523, 38.0523, 34, 37.5, 34);
-    path_3.lineTo(35.75, 34);
-    path_3.cubicTo(35.1977, 34, 34.75, 33.5523, 34.75, 33);
-    path_3.lineTo(34.75, 22);
+    path_3.moveTo(34.75.w, 22.h);
+    path_3.cubicTo(34.75.w, 21.4477.h, 35.1977.w, 21.h, 35.75.w, 21.h);
+    path_3.lineTo(37.5.w, 21.h);
+    path_3.cubicTo(38.0523.w, 21.h, 38.5.w, 21.4477.h, 38.5.w, 22.h);
+    path_3.lineTo(38.5.w, 33.h);
+    path_3.cubicTo(38.5.w, 33.5523.h, 38.0523.w, 34.h, 37.5.w, 34.h);
+    path_3.lineTo(35.75.w, 34.h);
+    path_3.cubicTo(35.1977.w, 34.h, 34.75.w, 33.5523.h, 34.75.w, 33.h);
+    path_3.lineTo(34.75.w, 22.h);
     path_3.close();
 
     Paint paint_3_fill = Paint()..style = PaintingStyle.fill;
-    paint_3_fill.color = Color(0xff272A2E).withOpacity(1.0);
+    paint_3_fill.color = const Color(0xff272A2E).withOpacity(1.0);
     canvas.drawPath(path_3, paint_3_fill);
   }
 
@@ -703,13 +748,13 @@ class RPSCustomPainter extends CustomPainter {
     paint_0_fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.6633027, size.height * 0.6916617),
         Offset(size.width * 0.3286647, size.height * 0.3173205),
-        [Color(0xff101113).withOpacity(1), Color(0xff2B2F33).withOpacity(1)],
+        [const Color(0xff101113).withOpacity(1), const Color(0xff2B2F33).withOpacity(1)],
         [0, 1]);
     canvas.drawCircle(Offset(size.width * 0.4988190, size.height * 0.4988190),
         size.width * 0.2495614, paint_0_fill);
 
     Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
-    paint_1_fill.color = Color(0xff32363B).withOpacity(1.0);
+    paint_1_fill.color = const Color(0xff32363B).withOpacity(1.0);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.3234421, size.height * 0.3234421,

@@ -9,10 +9,8 @@ import 'package:test1/screen/setting_screen.dart';
 import '../models/home_providers.dart';
 import 'look_screen.dart';
 
-
 class HomeScreen extends StatelessWidget {
   final int currentScreen;
-
   const HomeScreen({super.key, required this.currentScreen});
 
   @override
@@ -150,8 +148,8 @@ class HomeScreen extends StatelessWidget {
               child: Stack(
                 children: [
                   Positioned(
-                    top: 14.h,
-                    left: -7.w,
+                    top: 13.h,
+                    left: -11.w,
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(

@@ -24,6 +24,7 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
+          flex: 2,
           child: SizedBox(
             width: 110.w,
             child: Center(
@@ -40,7 +41,9 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
           ),
         ),
         // circular elevated button with shadow and setting icon
-        settingButton(context, icon, onPressed)
+        Expanded(
+          flex: 2,
+            child: settingButton(context, icon, onPressed))
       ],
     ),
   );
