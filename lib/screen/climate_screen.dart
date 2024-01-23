@@ -7,8 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/common_widget/custom_appbar.dart';
-import 'package:test1/common_widget/setting_button.dart';
 import 'package:test1/models/climate_provider.dart';
+
+import '../common_widget/climate_items_buttons.dart';
 
 class ClimateScreen extends StatefulWidget {
   const ClimateScreen({super.key});
@@ -79,7 +80,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                             width: 100.w,
                             alignment: Alignment.center,
                             child: Text(
-                              '${((double.tryParse(value.acSliderValue.toString())??0.0)*100).toStringAsFixed(0)}°',
+                              '${((double.tryParse(value.acSliderValue.toString()) ?? 0.0) * 100).toStringAsFixed(0)}°',
                               style: TextStyle(
                                 color: const Color(0xff5C5C62),
                                 fontSize: 45.sp,
@@ -112,41 +113,99 @@ class _ClimateScreenState extends State<ClimateScreen> {
                   height: 20.h,
                 ),
                 Consumer<ClimateProvider>(
-                  builder: (context, value, child) =>  Column(
+                  builder: (context, value, child) => Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      buildClimateItems(context, 'AC', Icons.ac_unit_outlined, () {
-                        value.acButton();
-                      }, () {
-                        value.acButton();
-                      },value.acButtonON, (sliderValue) {
-                        value.acSlider(sliderValue);
-                      },
+                      buildClimateItems(
+                        context,
+                        'AC',
+                        Icons.ac_unit_outlined,
+                        () {
+                          value.acButton();
+                        },
+                        () {
+                          value.acButton();
+                        },
+                        value.acButtonON,
+                        (sliderValue) {
+                          value.acSlider(sliderValue);
+                        },
                         value.acSliderValue,
+                              (){value.acButton();},
+                                (){value.incrementAcSlider();},
+                                (){value.decrementAcSlider();},
                       ),
                       SizedBox(
                         height: 40.h,
                       ),
-                      buildClimateItems(context, 'Fan', Icons.air, () {}, () {value.fanButton();},value.fanButtonON, (sliderValue) {
-                        value.fanSlider(sliderValue);
-                      },
+                      buildClimateItems(
+                        context,
+                        'Fan',
+                        Icons.air,
+                        () {},
+                        () {
+                          value.fanButton();
+                        },
+                        value.fanButtonON,
+                        (sliderValue) {
+                          value.fanSlider(sliderValue);
+                        },
                         value.fanSliderValue,
+                            (){value.fanButton();},
+                            (){value.incrementFanSlider();},
+                            (){value.decrementFanSlider();},
                       ),
                       SizedBox(
                         height: 40.h,
                       ),
-                      buildClimateItems(context, 'Heat', Icons.arrow_circle_up, () {}, () {value.heatButton();},value.heatButtonON, (sliderValue) {
-                        value.heatSlider(sliderValue);
-                      },
+                      buildClimateItems(
+                        context,
+                        'Heat',
+                        Icons.arrow_circle_up,
+                        () {},
+                        () {
+                          value.heatButton();
+                        },
+                        value.heatButtonON,
+                        (sliderValue) {
+                          value.heatSlider(sliderValue);
+                        },
                         value.heatSliderValue,
+                          (){
+                          value.heatButton();
+                          },
+                          (){
+                          value.incrementHeatSlider();
+                          },
+                          (){
+                          value.decrementHeatSlider();
+                          }
                       ),
                       SizedBox(
                         height: 40.h,
                       ),
-                      buildClimateItems(context, 'Auto', Icons.av_timer_sharp, () {}, () {value.autoButton();},value.autoButtonON, (sliderValue) {
-                        value.autoSlider(sliderValue);
-                      },
+                      buildClimateItems(
+                        context,
+                        'Auto',
+                        Icons.av_timer_sharp,
+                        () {},
+                        () {
+                          value.autoButton();
+                        },
+                        value.autoButtonON,
+                        (sliderValue) {
+                          value.autoSlider(sliderValue);
+                        },
                         value.autoSliderValue,
+                          (){
+                          value.autoButton();
+                          },
+                          (){
+                          value.incrementAutoSlider();
+                          },
+                          (){
+                          value.decrementAutoSlider();
+                          }
                       ),
                       SizedBox(
                         height: 40.h,
@@ -156,7 +215,8 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         height: 200.h,
                       ),
                     ],
-                  ),),
+                  ),
+                ),
               ],
             ),
           ),
@@ -172,11 +232,10 @@ class _ClimateScreenState extends State<ClimateScreen> {
       height: 200.h,
       width: 200.w,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(1),
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xff000000).withOpacity(0.1),
+            color: const Color(0xff000000).withOpacity(0.01),
             spreadRadius: 0,
             blurRadius: 20,
             offset: const Offset(0, 10),
@@ -263,8 +322,19 @@ class _ClimateScreenState extends State<ClimateScreen> {
     );
   }
 
-  Padding buildClimateItems(BuildContext context, String text, IconData icon,
-      VoidCallback voidCallback,VoidCallback onButtonPressed,bool isOn, Function(double) onSliderChange,double currentValue) {
+  Padding buildClimateItems(
+    BuildContext context,
+    String text,
+    IconData icon,
+    VoidCallback voidCallback,
+    VoidCallback onButtonPressed,
+    bool isOn,
+    Function(double) onSliderChange,
+    double currentValue,
+    VoidCallback onPowerOff,
+    VoidCallback onIncreaseValue,
+    VoidCallback onDecreaseValue,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
       child: Row(
@@ -285,10 +355,16 @@ class _ClimateScreenState extends State<ClimateScreen> {
           ),
           Expanded(
             flex: 4,
-            child: settingButton(context, icon, () {
+            child: climateItemsButton(context, icon, () {
               onButtonPressed();
-              _showBottomSheet(context, currentValue.toString(), isOn);
-            }),
+              _showBottomSheet(context, currentValue.toString(), isOn, () {
+                onPowerOff();
+              }, () {
+                onIncreaseValue();
+              }, () {
+                onDecreaseValue();
+              });
+            }, isOn),
           ),
           // slider with custom indicator
           Expanded(
@@ -327,7 +403,13 @@ class _ClimateScreenState extends State<ClimateScreen> {
   }
 
   // bottom sheet function which will be called when the user clicks on the settings button
-  void _showBottomSheet(BuildContext context, String value, bool PowerOn) {
+  void _showBottomSheet(
+      BuildContext context,
+      String value,
+      bool onOffValue,
+      VoidCallback onPowerChanged,
+      VoidCallback increasedValue,
+      VoidCallback decreasedValue) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(40.r)),
@@ -390,7 +472,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           ],
                         ).createShader(bounds),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            onPowerChanged();
+                          },
                           icon: Icon(
                             Icons.power_settings_new,
                             color: const Color(0xffEBEBF5).withOpacity(0.6),
@@ -399,7 +483,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          decreasedValue();
+                        },
                         icon: Icon(
                           CupertinoIcons.left_chevron,
                           color: const Color(0xffEBEBF5).withOpacity(0.6),
@@ -407,7 +493,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                       ),
                       Text(
-                        '${((double.tryParse(value)??0.0)*100).toStringAsFixed(0)}°',
+                        '${((double.tryParse(value) ?? 0.0) * 100).toStringAsFixed(0)}°',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 34.sp,
@@ -416,7 +502,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          increasedValue();
+                        },
                         icon: Icon(
                           CupertinoIcons.right_chevron,
                           color: const Color(0xffEBEBF5).withOpacity(0.6),
@@ -480,12 +568,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
         value: value,
         size: size,
         strokeWidth: strokeWidth,
-        color: [
-          const Color(0xff9EECD9),
-          const Color(0xff9EECD9),
-          const Color(0xff2FB8FF),
-          const Color(0xff2FB8FF),
-        ],
+        color: const Color(0xff2FB8FF),
       ),
     );
   }
@@ -495,7 +578,7 @@ class MyIndicatorPainter extends CustomPainter {
   final double value;
   final double size;
   final double strokeWidth;
-  final List<Color> color;
+  final Color color;
 
   MyIndicatorPainter({
     required this.value,
@@ -521,30 +604,39 @@ class MyIndicatorPainter extends CustomPainter {
     final double sweepAngle = 2 * pi * value;
 
     final Gradient gradient = SweepGradient(
-      startAngle: 0,
-      endAngle: 2 * pi,
-      colors: color,
+      startAngle: startAngle, // Set start angle to -pi/2
+      endAngle: startAngle + 2 * pi,
+      center: Alignment.center,
+      colors: [
+        color.withOpacity(0.2), // Less opacity at start
+        color.withOpacity(0.8), // Intermediate shade
+        color, // Full color
+      ],
     );
 
-    final Rect rect2 = Rect.fromCircle(center: center, radius: radius);
-
-    final Gradient gradient2 = SweepGradient(
-      startAngle: 0,
-      endAngle: 2 * pi,
-      colors: color,
-    );
-
-    canvas.drawArc(rect, startAngle, sweepAngle, false,
-        paint..shader = gradient.createShader(rect2));
-
-    canvas.drawArc(rect, startAngle, sweepAngle, false,
-        paint..shader = gradient2.createShader(rect2));
+    paint.shader = gradient.createShader(rect);
+    canvas.drawArc(rect, startAngle, sweepAngle, false, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
+Widget myIndicator({
+  required double value,
+  required double size,
+  required double strokeWidth,
+  required Color color,
+}) {
+  return CustomPaint(
+    painter: MyIndicatorPainter(
+      value: value,
+      size: size,
+      strokeWidth: strokeWidth,
+      color: color,
+    ),
+  );
+}
 class RectSliderThumbShape extends SliderComponentShape {
   const RectSliderThumbShape({
     this.enabledThumbRadius = 0.0,
@@ -563,72 +655,103 @@ class RectSliderThumbShape extends SliderComponentShape {
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.fromRadius(isEnabled ? enabledThumbRadius : _disabledThumbRadius);
+    return Size.fromRadius(
+        isEnabled ? enabledThumbRadius : _disabledThumbRadius);
   }
 
   @override
   void paint(
-      PaintingContext context,
-      Offset center, {
-        required Animation<double> activationAnimation,
-        required Animation<double> enableAnimation,
-        required bool isDiscrete,
-        required TextPainter labelPainter,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required TextDirection textDirection,
-        required double value,
-        required double textScaleFactor,
-        required Size sizeWithOverflow,
-      }) {
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
     assert(sliderTheme.disabledThumbColor != null);
     assert(sliderTheme.thumbColor != null);
-    Size size=Size(72.w, 63.h);
-    final Canvas canvas = context.canvas..translate(center.dx-25, -size.height / 2 + 10);
-    Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
-    paint_0_fill.shader = ui.Gradient.linear(Offset(size.width*0.3046875,size.height*0.3285714), Offset(size.width*0.6138444,size.height*0.6712032), [Color(0xff2E3236).withOpacity(1),Color(0xff141515).withOpacity(1)], [0,1]);
-    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_0_fill);
+    Size size = Size(72.w, 63.h);
+    final Canvas canvas = context.canvas
+      ..translate(center.dx - 25, -size.height / 2 + 10);
+    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
+    paint_0_fill.shader = ui.Gradient.linear(
+        Offset(size.width * 0.3046875, size.height * 0.3285714),
+        Offset(size.width * 0.6138444, size.height * 0.6712032),
+        [Color(0xff2E3236).withOpacity(1), Color(0xff141515).withOpacity(1)],
+        [0, 1]);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
+                size.width * 0.3819444, size.height * 0.2698413),
+            bottomRight: Radius.circular(size.width * 0.08333333),
+            bottomLeft: Radius.circular(size.width * 0.08333333),
+            topLeft: Radius.circular(size.width * 0.08333333),
+            topRight: Radius.circular(size.width * 0.08333333)),
+        paint_0_fill);
 
-    Paint paint_1_stroke = Paint()..style=PaintingStyle.stroke..strokeWidth=2;
-    paint_1_stroke.color=Color(0xff212325).withOpacity(1.0);
-    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_1_stroke);
+    Paint paint_1_stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    paint_1_stroke.color = Color(0xff212325).withOpacity(1.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
+                size.width * 0.3819444, size.height * 0.2698413),
+            bottomRight: Radius.circular(size.width * 0.08333333),
+            bottomLeft: Radius.circular(size.width * 0.08333333),
+            topLeft: Radius.circular(size.width * 0.08333333),
+            topRight: Radius.circular(size.width * 0.08333333)),
+        paint_1_stroke);
 
-    Paint paint_1_fill = Paint()..style=PaintingStyle.fill;
+    Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
     paint_1_fill.color = const Color(0xff000000).withOpacity(1.0);
-    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_1_fill);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
+                size.width * 0.3819444, size.height * 0.2698413),
+            bottomRight: Radius.circular(size.width * 0.08333333),
+            bottomLeft: Radius.circular(size.width * 0.08333333),
+            topLeft: Radius.circular(size.width * 0.08333333),
+            topRight: Radius.circular(size.width * 0.08333333)),
+        paint_1_fill);
 
     Path path_2 = Path();
-    path_2.moveTo(29.w,22.h);
-    path_2.cubicTo(29.w,21.4477.h,29.4477.w,21.h,30.w,21.h);
-    path_2.lineTo(31.75.w,21.h);
-    path_2.cubicTo(32.3023.w,21.h,32.75.w,21.4477.h,32.75.w,22.h);
-    path_2.lineTo(32.75.w,33.h);
-    path_2.cubicTo(32.75.w,33.5523,32.3023.w,34.h,31.75.w,34.h);
-    path_2.lineTo(30.w,34.h);
-    path_2.cubicTo(29.4477.w,34.h,29.w,33.5523.h,29.w,33.h);
-    path_2.lineTo(29.w,22.h);
+    path_2.moveTo(29.w, 22.h);
+    path_2.cubicTo(29.w, 21.4477.h, 29.4477.w, 21.h, 30.w, 21.h);
+    path_2.lineTo(31.75.w, 21.h);
+    path_2.cubicTo(32.3023.w, 21.h, 32.75.w, 21.4477.h, 32.75.w, 22.h);
+    path_2.lineTo(32.75.w, 33.h);
+    path_2.cubicTo(32.75.w, 33.5523, 32.3023.w, 34.h, 31.75.w, 34.h);
+    path_2.lineTo(30.w, 34.h);
+    path_2.cubicTo(29.4477.w, 34.h, 29.w, 33.5523.h, 29.w, 33.h);
+    path_2.lineTo(29.w, 22.h);
     path_2.close();
 
-    Paint paint_2_fill = Paint()..style=PaintingStyle.fill;
-    paint_2_fill.color = Color(0xff272A2E).withOpacity(1.0);
-    canvas.drawPath(path_2,paint_2_fill);
+    Paint paint2Fill = Paint()..style = PaintingStyle.fill;
+    paint2Fill.color = const Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_2, paint2Fill);
 
     Path path_3 = Path();
-    path_3.moveTo(34.75.w,22.h);
-    path_3.cubicTo(34.75.w,21.4477.h,35.1977.w,21.h,35.75.w,21.h);
-    path_3.lineTo(37.5.w,21.h);
-    path_3.cubicTo(38.0523.w,21.h,38.5.w,21.4477.h,38.5.w,22.h);
-    path_3.lineTo(38.5.w,33.h);
-    path_3.cubicTo(38.5.w,33.5523.h,38.0523.w,34.h,37.5.w,34.h);
-    path_3.lineTo(35.75.w,34.h);
-    path_3.cubicTo(35.1977.w,34.h,34.75.w,33.5523.h,34.75.w,33.h);
-    path_3.lineTo(34.75.w,22.h);
+    path_3.moveTo(34.75.w, 22.h);
+    path_3.cubicTo(34.75.w, 21.4477.h, 35.1977.w, 21.h, 35.75.w, 21.h);
+    path_3.lineTo(37.5.w, 21.h);
+    path_3.cubicTo(38.0523.w, 21.h, 38.5.w, 21.4477.h, 38.5.w, 22.h);
+    path_3.lineTo(38.5.w, 33.h);
+    path_3.cubicTo(38.5.w, 33.5523.h, 38.0523.w, 34.h, 37.5.w, 34.h);
+    path_3.lineTo(35.75.w, 34.h);
+    path_3.cubicTo(35.1977.w, 34.h, 34.75.w, 33.5523.h, 34.75.w, 33.h);
+    path_3.lineTo(34.75.w, 22.h);
     path_3.close();
 
-    Paint paint3Fill = Paint()..style=PaintingStyle.fill;
+    Paint paint3Fill = Paint()..style = PaintingStyle.fill;
     paint3Fill.color = const Color(0xff272A2E).withOpacity(1.0);
-    canvas.drawPath(path_3,paint3Fill);
-
+    canvas.drawPath(path_3, paint3Fill);
   }
 }
 
@@ -640,9 +763,13 @@ class MyPainter extends CustomPainter {
     Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
     paint_0_fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.3046875, size.height * 0.3285714),
-        Offset(size.width * 0.6138444, size.height * 0.6712032),
-        [const Color(0xff2E3236).withOpacity(1), const Color(0xff141515).withOpacity(1)],
-        [0, 1]);
+        Offset(size.width * 0.6138444, size.height * 0.6712032), [
+      const Color(0xff2E3236).withOpacity(1),
+      const Color(0xff141515).withOpacity(1)
+    ], [
+      0,
+      1
+    ]);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
@@ -722,9 +849,13 @@ class RPSCustomPainter extends CustomPainter {
     Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
     paint_0_fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.6633027, size.height * 0.6916617),
-        Offset(size.width * 0.3286647, size.height * 0.3173205),
-        [const Color(0xff101113).withOpacity(1), const Color(0xff2B2F33).withOpacity(1)],
-        [0, 1]);
+        Offset(size.width * 0.3286647, size.height * 0.3173205), [
+      const Color(0xff101113).withOpacity(1),
+      const Color(0xff2B2F33).withOpacity(1)
+    ], [
+      0,
+      1
+    ]);
     canvas.drawCircle(Offset(size.width * 0.4988190, size.height * 0.4988190),
         size.width * 0.2495614, paint_0_fill);
 
