@@ -585,24 +585,6 @@ class RectSliderThumbShape extends SliderComponentShape {
     assert(sliderTheme.thumbColor != null);
     Size size=Size(72.w, 63.h);
     final Canvas canvas = context.canvas..translate(center.dx-25, -size.height / 2 + 10);
-    final Tween<double> radiusTween = Tween<double>(
-      begin: _disabledThumbRadius,
-      end: enabledThumbRadius,
-    );
-    final ColorTween colorTween = ColorTween(
-      begin: sliderTheme.disabledThumbColor,
-      end: sliderTheme.thumbColor,
-    );
-
-    final Color color = colorTween.evaluate(enableAnimation)!;
-    final double radius = radiusTween.evaluate(enableAnimation);
-
-    final Tween<double> elevationTween = Tween<double>(
-      begin: elevation,
-      end: pressedElevation,
-    );
-
-    final double evaluatedElevation = elevationTween.evaluate(activationAnimation);
     Paint paint_0_fill = Paint()..style=PaintingStyle.fill;
     paint_0_fill.shader = ui.Gradient.linear(Offset(size.width*0.3046875,size.height*0.3285714), Offset(size.width*0.6138444,size.height*0.6712032), [Color(0xff2E3236).withOpacity(1),Color(0xff141515).withOpacity(1)], [0,1]);
     canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(size.width*0.2777778,size.height*0.3015873,size.width*0.3819444,size.height*0.2698413),bottomRight: Radius.circular(size.width*0.08333333),bottomLeft:  Radius.circular(size.width*0.08333333),topLeft:  Radius.circular(size.width*0.08333333),topRight:  Radius.circular(size.width*0.08333333)),paint_0_fill);
@@ -647,13 +629,6 @@ class RectSliderThumbShape extends SliderComponentShape {
     paint_3_fill.color = const Color(0xff272A2E).withOpacity(1.0);
     canvas.drawPath(path_3,paint_3_fill);
 
-    bool paintShadows = true;
-    assert(() {
-      if (debugDisableShadows) {
-        paintShadows = false;
-      }
-      return true;
-    }());
   }
 }
 
