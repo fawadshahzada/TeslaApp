@@ -7,42 +7,100 @@ class ClimateProvider extends ChangeNotifier {
   bool autoButtonON = false;
   bool showCircularProgressIndicator = false;
 
+  get showProgress => showCircularProgressIndicator;
+
   String lastButtonPressed = 'AC';
 
-  double acSliderValue = 0.1;
-  double fanSliderValue = 0.2;
-  double heatSliderValue = 0.4;
-  double autoSliderValue = 0.5;
+  double acSliderValue = 0.0;
+  double fanSliderValue = 0.0;
+  double heatSliderValue = 0.0;
+  double autoSliderValue = 0.0;
   double progressIndicatorValue = 0.0;
+
+  set setShowCircularProgressIndicator(bool value) {
+    showCircularProgressIndicator = value;
+    notifyListeners();
+  }
+
+  set setIndicatorValue(double value) {
+    progressIndicatorValue = value;
+    notifyListeners();
+  }
+
+  void acButtonPressed() {
+    acButton();
+    if(acButtonON){
+      lastButtonPressed = 'AC';
+      progressIndicator();
+    }
+      showProgressIndicator();
+    notifyListeners();
+  }
+
+  void fanButtonPressed() {
+    fanButton();
+    if(fanButtonON){
+      lastButtonPressed = 'Fan';
+      showProgressIndicator();
+      progressIndicator();
+    }
+    notifyListeners();
+  }
+
+  void heatButtonPressed() {
+    heatButton();
+    if(heatButtonON){
+      lastButtonPressed = 'Heat';
+      showProgressIndicator();
+      progressIndicator();
+    }
+    notifyListeners();
+  }
+
+  void autoButtonPressed() {
+    autoButton();
+    if(autoButtonON){
+      lastButtonPressed = 'Auto';
+      showProgressIndicator();
+      progressIndicator();
+    }
+    notifyListeners();
+  }
 
   void acButton() {
     acButtonON = !acButtonON;
-    print('acButtonON: $acButtonON');
+    showProgressIndicator();
+
     notifyListeners();
   }
 
   void fanButton() {
     fanButtonON = !fanButtonON;
+    showProgressIndicator();
+
     notifyListeners();
   }
 
   void heatButton() {
     heatButtonON = !heatButtonON;
+    showProgressIndicator();
+
     notifyListeners();
   }
 
   void autoButton() {
     autoButtonON = !autoButtonON;
+    showProgressIndicator();
     notifyListeners();
   }
 
   void acSlider(double value) {
-    print('acSliderValue: $value');
     if (acButtonON) {
       acSliderValue = value;
     } else {
       acSliderValue = acSliderValue;
     }
+    showProgressIndicator();
     notifyListeners();
   }
 
@@ -52,6 +110,7 @@ class ClimateProvider extends ChangeNotifier {
     } else {
       fanSliderValue = fanSliderValue;
     }
+    showProgressIndicator();
     notifyListeners();
   }
 
@@ -61,6 +120,7 @@ class ClimateProvider extends ChangeNotifier {
     } else {
       heatSliderValue = heatSliderValue;
     }
+    showProgressIndicator();
     notifyListeners();
   }
 
@@ -70,6 +130,8 @@ class ClimateProvider extends ChangeNotifier {
     } else {
       autoSliderValue = autoSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -82,6 +144,8 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       acSliderValue = acSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -94,6 +158,8 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       acSliderValue = acSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -104,6 +170,8 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       fanSliderValue = fanSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -114,6 +182,8 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       fanSliderValue = fanSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -124,6 +194,8 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       heatSliderValue = heatSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -134,6 +206,8 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       heatSliderValue = heatSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -144,6 +218,8 @@ class ClimateProvider extends ChangeNotifier {
     else{
       autoSliderValue = autoSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
@@ -154,15 +230,17 @@ class ClimateProvider extends ChangeNotifier {
     }else{
       autoSliderValue = autoSliderValue;
     }
+    showProgressIndicator();
+
     notifyListeners();
   }
 
   // show progress indicator will depend on weather any of the button is on or off
   void showProgressIndicator() {
     if (acButtonON || fanButtonON || heatButtonON || autoButtonON) {
-      showCircularProgressIndicator = true;
+     setShowCircularProgressIndicator = true;
     } else {
-      showCircularProgressIndicator = false;
+      setShowCircularProgressIndicator = false;
     }
     notifyListeners();
   }
@@ -170,7 +248,7 @@ class ClimateProvider extends ChangeNotifier {
   // the value of the progress indicator will depend on the slider value which is been selected the latest
   void progressIndicator() {
     if (lastButtonPressed == 'AC') {
-      progressIndicatorValue = acSliderValue;
+      setIndicatorValue = acSliderValue;
     } else if (lastButtonPressed == 'Fan')  {
       progressIndicatorValue = fanSliderValue;
     } else if (lastButtonPressed == 'Heat')  {

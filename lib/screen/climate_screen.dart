@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:ui';
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -67,29 +68,43 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         ),
                         child: CustomPaint(
                           size: Size(370.w, (370.w * 1).toDouble()),
-                          //You can Replace [WIDTH] with your desired width for Custom Paint and height will be calculated automatically
                           painter: RPSCustomPainter(),
                         ),
                       ),
-                      // positioned text in the center of the circle
                       Consumer<ClimateProvider>(
-                        builder: (context, value, child) => Positioned(
-                          top: 120.h,
-                          left: 103.w,
-                          child: Container(
-                            width: 100.w,
-                            alignment: Alignment.center,
-                            child: Text(
-                              '${((double.tryParse(value.acSliderValue.toString()) ?? 0.0) * 100).toStringAsFixed(0)}°',
-                              style: TextStyle(
-                                color: const Color(0xff5C5C62),
-                                fontSize: 45.sp,
-                                fontWeight: FontWeight.w100,
-                                fontFamily: 'SfProBold',
+                        builder: (context, value, child){
+                          double watch = 0;
+                          if(value.lastButtonPressed == 'AC'){
+                            watch = value.acSliderValue;
+                          }else if(value.lastButtonPressed == 'Fan'){
+                            watch = value.fanSliderValue;
+                          }else if(value.lastButtonPressed == 'Heat'){
+                            watch = value.heatSliderValue;
+                          }else if(value.lastButtonPressed == 'Auto'){
+                            watch = value.autoSliderValue;
+                          }
+
+                          return  Positioned(
+                            top: 120.h,
+                            left: 100.w,
+                            child: (value.showCircularProgressIndicator)
+                                ? Container(
+                              width: 100.w,
+                              alignment: Alignment.center,
+                              child: AnimatedFlipCounter(
+                                value: watch * 100,
+                                textStyle: TextStyle(
+                                  color: const Color(0xff5C5C62),
+                                  fontSize: 40.sp,
+                                  fontWeight: FontWeight.w100,
+                                  fontFamily: 'SfProBold',
+                                ),
+                                duration: const Duration(milliseconds: 300),
                               ),
-                            ),
-                          ),
-                        ),
+                            )
+                                : const SizedBox(),
+                          );
+                        },
                       ),
                       Positioned(
                         top: 75.h,
@@ -98,11 +113,25 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           height: 150.h,
                           width: 150.w,
                           child: Consumer<ClimateProvider>(
-                            builder: (context, value, child) => myIndicator(
-                              value: value.acSliderValue,
-                              size: 120,
-                              strokeWidth: 18,
-                            ),
+                            builder: (context, value, child) {
+                              double watch = 0;
+                              if(value.lastButtonPressed == 'AC'){
+                                watch = value.acSliderValue;
+                              }else if(value.lastButtonPressed == 'Fan'){
+                                watch = value.fanSliderValue;
+                              }else if(value.lastButtonPressed == 'Heat'){
+                                watch = value.heatSliderValue;
+                              }else if(value.lastButtonPressed == 'Auto'){
+                                watch = value.autoSliderValue;
+                              }
+                                return(value.showCircularProgressIndicator)
+                                    ? myIndicator(
+                                        value: watch,
+                                        size: 120,
+                                        strokeWidth: 18,
+                                      )
+                                    : const SizedBox();
+                            }
                           ),
                         ),
                       ),
@@ -130,10 +159,16 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         (sliderValue) {
                           value.acSlider(sliderValue);
                         },
-                        value.acSliderValue,
-                              (){value.acButton();},
-                                (){value.incrementAcSlider();},
-                                (){value.decrementAcSlider();},
+                        (value.acSliderValue),
+                        () {
+                          value.acButton();
+                        },
+                        () {
+                          value.incrementAcSlider();
+                        },
+                        () {
+                          value.decrementAcSlider();
+                        },
                       ),
                       SizedBox(
                         height: 40.h,
@@ -151,62 +186,66 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           value.fanSlider(sliderValue);
                         },
                         value.fanSliderValue,
-                            (){value.fanButton();},
-                            (){value.incrementFanSlider();},
-                            (){value.decrementFanSlider();},
+                        () {
+                          value.fanButton();
+                        },
+                        () {
+                          value.incrementFanSlider();
+                        },
+                        () {
+                          value.decrementFanSlider();
+                        },
                       ),
                       SizedBox(
                         height: 40.h,
                       ),
                       buildClimateItems(
-                        context,
-                        'Heat',
-                        Icons.arrow_circle_up,
-                        () {},
-                        () {
-                          value.heatButton();
-                        },
-                        value.heatButtonON,
-                        (sliderValue) {
-                          value.heatSlider(sliderValue);
-                        },
-                        value.heatSliderValue,
-                          (){
-                          value.heatButton();
+                          context,
+                          'Heat',
+                          Icons.arrow_circle_up,
+                          () {},
+                          () {
+                            value.heatButton();
                           },
-                          (){
-                          value.incrementHeatSlider();
+                          value.heatButtonON,
+                          (sliderValue) {
+                            value.heatSlider(sliderValue);
                           },
-                          (){
-                          value.decrementHeatSlider();
-                          }
-                      ),
+                          value.heatSliderValue,
+                          () {
+                            value.heatButton();
+                          },
+                          () {
+                            value.incrementHeatSlider();
+                          },
+                          () {
+                            value.decrementHeatSlider();
+                          }),
                       SizedBox(
                         height: 40.h,
                       ),
                       buildClimateItems(
-                        context,
-                        'Auto',
-                        Icons.av_timer_sharp,
-                        () {},
-                        () {
-                          value.autoButton();
-                        },
-                        value.autoButtonON,
-                        (sliderValue) {
-                          value.autoSlider(sliderValue);
-                        },
-                        value.autoSliderValue,
-                          (){
-                          value.autoButton();
+                          context,
+                          'Auto',
+                          Icons.av_timer_sharp,
+                          () {},
+                          () {
+                            value.autoButton();
                           },
-                          (){
-                          value.incrementAutoSlider();
+                          value.autoButtonON,
+                          (sliderValue) {
+                            value.autoSlider(sliderValue);
                           },
-                          (){
-                          value.decrementAutoSlider();
-                          }
-                      ),
+                          value.autoSliderValue,
+                          () {
+                            value.autoButton();
+                          },
+                          () {
+                            value.incrementAutoSlider();
+                          },
+                          () {
+                            value.decrementAutoSlider();
+                          }),
                       SizedBox(
                         height: 40.h,
                       ),
@@ -221,103 +260,6 @@ class _ClimateScreenState extends State<ClimateScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  circularContainer(
-    String value,
-  ) {
-    return Container(
-      height: 200.h,
-      width: 200.w,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xff000000).withOpacity(0.01),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-          // shadow color 0xff00000 2% to the bottom side with more blur radius
-          BoxShadow(
-            color: const Color(0xff000000).withOpacity(0.02),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 2),
-          ),
-          // shadow color 0xff00000 2% to the left side with more blur radius
-          BoxShadow(
-            color: const Color(0xff000000).withOpacity(0.02),
-            spreadRadius: 5,
-            blurRadius: 20,
-            offset: const Offset(-2, 0),
-          ),
-        ],
-      ),
-      // inside is another container with the same size and shape but the shadows are inwards
-      child: Stack(
-        children: [
-          Container(
-            width: 300.w,
-            height: 300.h,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.all(
-                Radius.circular(50.r),
-              ),
-            ),
-            child: CustomPaint(
-              painter: MyPainter(),
-              child: Container(),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(25.r),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  // shadow color 0xff00000 2% to the top side with more blur radius
-                  BoxShadow(
-                    color: const Color(0xffEBEBF5).withOpacity(0.09),
-                    spreadRadius: 5,
-                    blurRadius: 10,
-                    offset: const Offset(-6, -8),
-                  ),
-                  // shadow color 0xff00000 2% to the bottom side with more blur radius
-                  BoxShadow(
-                    color: const Color(0xffffffff).withOpacity(0.02),
-                    spreadRadius: 0,
-                    blurRadius: 20,
-                    offset: const Offset(0, 2),
-                  ),
-                  // shadow color 0xff00000 2% to the left side with more blur radius
-                  BoxShadow(
-                    color: const Color(0xffffffff).withOpacity(0.02),
-                    spreadRadius: 5,
-                    blurRadius: 20,
-                    offset: const Offset(-2, 0),
-                  ),
-                ],
-              ),
-              child: Center(
-                //large white bold text, which will be number
-                child: Text(
-                  value,
-                  style: TextStyle(
-                    color: const Color(0xff5C5C62),
-                    fontSize: 54.sp,
-                    fontWeight: FontWeight.w100,
-                    fontFamily: 'SfProBold',
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -363,8 +305,8 @@ class _ClimateScreenState extends State<ClimateScreen> {
                 onIncreaseValue();
               }, () {
                 onDecreaseValue();
-              });
-            }, isOn),
+              }, text);
+            }, isOn,),
           ),
           // slider with custom indicator
           Expanded(
@@ -381,7 +323,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                     overlayColor: Colors.black,
                     // track shape should should be rectangular with rounded borders and shadow effect
                     trackShape: const RoundedRectSliderTrackShape(),
-                    trackHeight: 6,
+                    trackHeight: 8,
                     thumbShape: const RectSliderThumbShape()),
                 child: Slider(
                   activeColor: const Color(0xff2FB8FF).withOpacity(0.7),
@@ -404,158 +346,186 @@ class _ClimateScreenState extends State<ClimateScreen> {
 
   // bottom sheet function which will be called when the user clicks on the settings button
   void _showBottomSheet(
-      BuildContext context,
-      String value,
-      bool onOffValue,
-      VoidCallback onPowerChanged,
-      VoidCallback increasedValue,
-      VoidCallback decreasedValue) {
-    showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(40.r)),
-      ),
-      elevation: 5,
-      backgroundColor: Colors.black.withOpacity(1),
-      context: context,
-      builder: (context) {
-        return BackdropFilter(
-          // filter for the blur glass like effect
-          filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+    BuildContext context,
+    String value,
+    bool onOffValue,
+    VoidCallback onPowerChanged,
+    VoidCallback increasedValue,
+    VoidCallback decreasedValue,
+      String text,
+  ) {
+    //if text =  ac then value = acSliderValue
+    onOffValue
+        ? const SizedBox()
+        : showModalBottomSheet(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(40.r)),
+            ),
+            elevation: 5,
+            backgroundColor: Colors.black.withOpacity(1),
+            context: context,
+            builder: (context) {
+              return BackdropFilter(
+                // filter for the blur glass like effect
+                filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
 
-          child: GlassmorphicContainer(
-            margin: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
-            height: 150.h,
-            width: 390.w,
-            blur: 1,
-            //--code to remove border
-            border: 0,
-            shape: BoxShape.circle,
-            // Color(0xff2FB8FF).withOpacity(0.3),
-            // Colors.white.withOpacity(0.2),
-            linearGradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.2),
-                const Color(0xff2FB8FF).withOpacity(0.3),
-              ],
-            ),
-            borderGradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.2),
-                Colors.blue.withOpacity(0.3),
-              ],
-            ),
-            borderRadius: 40.r,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20.h,
-                ),
-                // a row with 4 buttons, one is icon button, second is left arrow button
-                // value and then right arrow button and then a button with check icon
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ShaderMask(
-                        blendMode: BlendMode.srcIn,
-                        shaderCallback: (Rect bounds) => const RadialGradient(
-                          center: Alignment.topCenter,
-                          stops: [.5, 1],
-                          colors: [
-                            Color(0xff2FB8FF),
-                            Color(0xff9EECD9),
-                          ],
-                        ).createShader(bounds),
-                        child: IconButton(
-                          onPressed: () {
-                            onPowerChanged();
-                          },
-                          icon: Icon(
-                            Icons.power_settings_new,
-                            color: const Color(0xffEBEBF5).withOpacity(0.6),
-                            size: 30,
+                child: Consumer<ClimateProvider>(
+                  builder: (context, watch, child){
+                    double value = 0;
+                    if(text == 'AC'){
+                      value = watch.acSliderValue;
+                    }else if(text == 'Fan'){
+                      value = watch.fanSliderValue;
+                    }else if(text == 'Heat'){
+                      value = watch.heatSliderValue;
+                    }else if(text == 'Auto'){
+                      value = watch.autoSliderValue;
+                    }
+                    return GlassmorphicContainer(
+                      margin:
+                      EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
+                      height: 150.h,
+                      width: 390.w,
+                      blur: 1,
+                      //--code to remove border
+                      border: 0,
+                      shape: BoxShape.circle,
+                      // Color(0xff2FB8FF).withOpacity(0.3),
+                      // Colors.white.withOpacity(0.2),
+                      linearGradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withOpacity(0.2),
+                          const Color(0xff2FB8FF).withOpacity(0.3),
+                        ],
+                      ),
+                      borderGradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withOpacity(0.2),
+                          Colors.blue.withOpacity(0.3),
+                        ],
+                      ),
+                      borderRadius: 40.r,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 20.h,
                           ),
-                        ),
+                          // a row with 4 buttons, one is icon button, second is left arrow button
+                          // value and then right arrow button and then a button with check icon
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ShaderMask(
+                                  blendMode: BlendMode.srcIn,
+                                  shaderCallback: (Rect bounds) =>
+                                      const RadialGradient(
+                                        center: Alignment.topCenter,
+                                        stops: [.5, 1],
+                                        colors: [
+                                          Color(0xff2FB8FF),
+                                          Color(0xff9EECD9),
+                                        ],
+                                      ).createShader(bounds),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      onPowerChanged();
+                                    },
+                                    icon: Icon(
+                                      Icons.power_settings_new,
+                                      color: const Color(0xffEBEBF5)
+                                          .withOpacity(0.6),
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    decreasedValue();
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.left_chevron,
+                                    color:
+                                    const Color(0xffEBEBF5).withOpacity(0.6),
+                                    size: 18.sp,
+                                  ),
+                                ),
+                                AnimatedFlipCounter(
+                                  duration: const Duration(milliseconds: 300),
+                                  value: value * 100,
+                                  textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 34.sp,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'SfProBold',
+                                  ),
+                                  suffix: '°',
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    increasedValue();
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.right_chevron,
+                                    color:
+                                    const Color(0xffEBEBF5).withOpacity(0.6),
+                                    size: 18.sp,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.event,
+                                    color:
+                                    const Color(0xffEBEBF5).withOpacity(0.6),
+                                    size: 22.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // a row with text on or off and a text value both at the other side of things
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 35.0.w, vertical: 25.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'On',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'SfProBold',
+                                  ),
+                                ),
+                                Text(
+                                  'Vent',
+                                  style: TextStyle(
+                                    color:
+                                    const Color(0xffEBEBF5).withOpacity(0.6),
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'SfProBold',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () {
-                          decreasedValue();
-                        },
-                        icon: Icon(
-                          CupertinoIcons.left_chevron,
-                          color: const Color(0xffEBEBF5).withOpacity(0.6),
-                          size: 18.sp,
-                        ),
-                      ),
-                      Text(
-                        '${((double.tryParse(value) ?? 0.0) * 100).toStringAsFixed(0)}°',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 34.sp,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'SfProBold',
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          increasedValue();
-                        },
-                        icon: Icon(
-                          CupertinoIcons.right_chevron,
-                          color: const Color(0xffEBEBF5).withOpacity(0.6),
-                          size: 18.sp,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.event,
-                          color: const Color(0xffEBEBF5).withOpacity(0.6),
-                          size: 22.sp,
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
-                // a row with text on or off and a text value both at the other side of things
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 35.0.w, vertical: 25.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'On',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'SfProBold',
-                        ),
-                      ),
-                      Text(
-                        'Vent',
-                        style: TextStyle(
-                          color: const Color(0xffEBEBF5).withOpacity(0.6),
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'SfProBold',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              );
+            },
+          );
   }
 
   Widget myIndicator({
@@ -637,6 +607,7 @@ Widget myIndicator({
     ),
   );
 }
+
 class RectSliderThumbShape extends SliderComponentShape {
   const RectSliderThumbShape({
     this.enabledThumbRadius = 0.0,
@@ -679,12 +650,16 @@ class RectSliderThumbShape extends SliderComponentShape {
     Size size = Size(72.w, 63.h);
     final Canvas canvas = context.canvas
       ..translate(center.dx - 25, -size.height / 2 + 10);
-    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
-    paint_0_fill.shader = ui.Gradient.linear(
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.3046875, size.height * 0.3285714),
-        Offset(size.width * 0.6138444, size.height * 0.6712032),
-        [Color(0xff2E3236).withOpacity(1), Color(0xff141515).withOpacity(1)],
-        [0, 1]);
+        Offset(size.width * 0.6138444, size.height * 0.6712032), [
+      const Color(0xff2E3236).withOpacity(1),
+      const Color(0xff141515).withOpacity(1)
+    ], [
+      0,
+      1
+    ]);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
@@ -693,7 +668,7 @@ class RectSliderThumbShape extends SliderComponentShape {
             bottomLeft: Radius.circular(size.width * 0.08333333),
             topLeft: Radius.circular(size.width * 0.08333333),
             topRight: Radius.circular(size.width * 0.08333333)),
-        paint_0_fill);
+        paint0Fill);
 
     Paint paint_1_stroke = Paint()
       ..style = PaintingStyle.stroke
@@ -760,8 +735,8 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Get the center of the canvas
 
-    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
-    paint_0_fill.shader = ui.Gradient.linear(
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.3046875, size.height * 0.3285714),
         Offset(size.width * 0.6138444, size.height * 0.6712032), [
       const Color(0xff2E3236).withOpacity(1),
@@ -778,7 +753,7 @@ class MyPainter extends CustomPainter {
             bottomLeft: Radius.circular(size.width * 0.08333333),
             topLeft: Radius.circular(size.width * 0.08333333),
             topRight: Radius.circular(size.width * 0.08333333)),
-        paint_0_fill);
+        paint0Fill);
 
     Paint paint_1_stroke = Paint()
       ..style = PaintingStyle.stroke
@@ -818,9 +793,9 @@ class MyPainter extends CustomPainter {
     path_2.lineTo(29.w, 22.h);
     path_2.close();
 
-    Paint paint_2_fill = Paint()..style = PaintingStyle.fill;
-    paint_2_fill.color = const Color(0xff272A2E).withOpacity(1.0);
-    canvas.drawPath(path_2, paint_2_fill);
+    Paint paint2Fill = Paint()..style = PaintingStyle.fill;
+    paint2Fill.color = const Color(0xff272A2E).withOpacity(1.0);
+    canvas.drawPath(path_2, paint2Fill);
 
     Path path_3 = Path();
     path_3.moveTo(34.75.w, 22.h);
@@ -846,8 +821,8 @@ class MyPainter extends CustomPainter {
 class RPSCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
-    paint_0_fill.shader = ui.Gradient.linear(
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.shader = ui.Gradient.linear(
         Offset(size.width * 0.6633027, size.height * 0.6916617),
         Offset(size.width * 0.3286647, size.height * 0.3173205), [
       const Color(0xff101113).withOpacity(1),
@@ -857,10 +832,10 @@ class RPSCustomPainter extends CustomPainter {
       1
     ]);
     canvas.drawCircle(Offset(size.width * 0.4988190, size.height * 0.4988190),
-        size.width * 0.2495614, paint_0_fill);
+        size.width * 0.2495614, paint0Fill);
 
-    Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
-    paint_1_fill.color = const Color(0xff32363B).withOpacity(1.0);
+    Paint paint1Fill = Paint()..style = PaintingStyle.fill;
+    paint1Fill.color = const Color(0xff32363B).withOpacity(1.0);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.3234421, size.height * 0.3234421,
@@ -869,7 +844,7 @@ class RPSCustomPainter extends CustomPainter {
             bottomLeft: Radius.circular(size.width * 0.1769243),
             topLeft: Radius.circular(size.width * 0.1769243),
             topRight: Radius.circular(size.width * 0.1769243)),
-        paint_1_fill);
+        paint1Fill);
   }
 
   @override

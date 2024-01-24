@@ -37,6 +37,7 @@ dependencies:
   syncfusion_flutter_gauges: ^24.1.45
   flutter_neumorphic_plus: ^3.3.0
   glassmorphism:
+  animated_flip_counter: ^0.2.6
 
 
 
