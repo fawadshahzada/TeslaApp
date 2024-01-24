@@ -27,6 +27,11 @@ class ClimateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setLastButtonPressed(String value) {
+    lastButtonPressed = value;
+    notifyListeners();
+  }
+
   void acButtonPressed() {
     acButton();
     notifyListeners();
@@ -53,6 +58,8 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void acButton() {
+    autoButtonON = false;
+    heatButtonON = false;
     lastButtonPressed = 'AC';
     acButtonON = !acButtonON;
     showProgressIndicator();
@@ -61,6 +68,7 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void fanButton() {
+    autoButtonON = false;
     lastButtonPressed = 'Fan';
     fanButtonON = !fanButtonON;
     showProgressIndicator();
@@ -69,6 +77,8 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void heatButton() {
+    autoButtonON = false;
+    acButtonON = false;
     lastButtonPressed = 'Heat';
     heatButtonON = !heatButtonON;
     showProgressIndicator();
@@ -77,6 +87,9 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void autoButton() {
+    acButtonON = false;
+    fanButtonON = false;
+    heatButtonON = false;
     lastButtonPressed = 'Auto';
     autoButtonON = !autoButtonON;
     showProgressIndicator();

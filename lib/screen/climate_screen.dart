@@ -59,7 +59,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           boxShadow: [
                             // drop shadow effect to the top left
                             BoxShadow(
-                              color: const Color(0xffffffff).withOpacity(0.1),
+                              color: const Color(0xffffffff).withOpacity(0.05),
                               spreadRadius: -60,
                               blurRadius: 10,
                               offset: const Offset(-4, -8),
@@ -125,13 +125,23 @@ class _ClimateScreenState extends State<ClimateScreen> {
                               }else if(value.lastButtonPressed == 'Auto'){
                                 watch = value.autoSliderValue;
                               }
-                                return(value.showCircularProgressIndicator)
-                                    ? myIndicator(
-                                        value: watch,
-                                        size: 120,
-                                        strokeWidth: 18,
-                                      )
-                                    : const SizedBox();
+                                if ((value.showCircularProgressIndicator)) {
+                                  return CircularProgressIndicator(
+                                  strokeWidth: 17,
+                                  value: watch,
+                                  backgroundColor: Colors.black.withOpacity(0.05),
+                                  color: const Color(0xff2FB8FF).withOpacity(watch/100),
+                                  //circular border ends for the circular progress indicator
+                                  // should be rounded
+                                                                   strokeCap: StrokeCap.round,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    const Color(0xff2FB8FF).withOpacity(0.7),
+                                  ),
+
+                                                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
                             }
                           ),
                         ),
@@ -158,6 +168,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         },
                         value.acButtonON,
                         (sliderValue) {
+                          value.setLastButtonPressed = 'AC';
                           value.acSlider(sliderValue);
                         },
                         (value.acSliderValue),
@@ -184,6 +195,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                         },
                         value.fanButtonON,
                         (sliderValue) {
+                          value.setLastButtonPressed = 'Fan';
                           value.fanSlider(sliderValue);
                         },
                         value.fanSliderValue,
@@ -210,6 +222,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           },
                           value.heatButtonON,
                           (sliderValue) {
+                            value.setLastButtonPressed = 'Heat';
                             value.heatSlider(sliderValue);
                           },
                           value.heatSliderValue,
@@ -235,6 +248,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           },
                           value.autoButtonON,
                           (sliderValue) {
+                            value.setLastButtonPressed = 'Auto';
                             value.autoSlider(sliderValue);
                           },
                           value.autoSliderValue,
@@ -564,7 +578,15 @@ class MyIndicatorPainter extends CustomPainter {
       ..color = Colors.black
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+      ..style = PaintingStyle.stroke..shader = ui.Gradient.linear(
+          Offset(size.width * 0.3046875, size.height * 0.3285714),
+          Offset(size.width * 0.6138444, size.height * 0.6712032), [
+        const Color(0xff2E3236).withOpacity(1),
+        const Color(0xff141515).withOpacity(1)
+      ], [
+        0,
+        1
+      ]);
 
     final double radius = size.width / 2;
     final Offset center = Offset(size.width / 2, size.height / 2);
@@ -575,12 +597,13 @@ class MyIndicatorPainter extends CustomPainter {
     final double sweepAngle = 2 * pi * value;
 
     final Gradient gradient = SweepGradient(
-      startAngle: startAngle, // Set start angle to -pi/2
+      startAngle: startAngle,
       endAngle: startAngle + 2 * pi,
       center: Alignment.center,
+      stops: const [0.0, 0.3, 1.0], // Adjusted stops for opacity
       colors: [
-        color.withOpacity(0.2), // Less opacity at start
-        color.withOpacity(0.8), // Intermediate shade
+        color.withOpacity(0.1), // Less opacity at start
+        color.withOpacity(0.5), // Intermediate shade
         color, // Full color
       ],
     );
@@ -593,21 +616,6 @@ class MyIndicatorPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-Widget myIndicator({
-  required double value,
-  required double size,
-  required double strokeWidth,
-  required Color color,
-}) {
-  return CustomPaint(
-    painter: MyIndicatorPainter(
-      value: value,
-      size: size,
-      strokeWidth: strokeWidth,
-      color: color,
-    ),
-  );
-}
 
 class RectSliderThumbShape extends SliderComponentShape {
   const RectSliderThumbShape({
@@ -756,10 +764,10 @@ class MyPainter extends CustomPainter {
             topRight: Radius.circular(size.width * 0.08333333)),
         paint0Fill);
 
-    Paint paint_1_stroke = Paint()
+    Paint paint1Stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
-    paint_1_stroke.color = const Color(0xff212325).withOpacity(1.0);
+    paint1Stroke.color = const Color(0xff212325).withOpacity(1.0);
     canvas.drawRRect(
         RRect.fromRectAndCorners(
             Rect.fromLTWH(size.width * 0.2777778, size.height * 0.3015873,
@@ -768,7 +776,7 @@ class MyPainter extends CustomPainter {
             bottomLeft: Radius.circular(size.width * 0.08333333),
             topLeft: Radius.circular(size.width * 0.08333333),
             topRight: Radius.circular(size.width * 0.08333333)),
-        paint_1_stroke);
+        paint1Stroke);
 
     Paint paint_1_fill = Paint()..style = PaintingStyle.fill;
     paint_1_fill.color = const Color(0xff000000).withOpacity(1.0);

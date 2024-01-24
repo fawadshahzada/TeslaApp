@@ -359,41 +359,38 @@ class _ChargingScreenState extends State<ChargingScreen>
                       Consumer<ChargingProvider>(
                         builder: (BuildContext context, watch, Widget? child) {
                           return Positioned(
-                            top: 305.h,
-                            right: watch.sliderValue.w,
-                            child: Draggable<double>(
-                              axis: Axis.horizontal,
-                              feedback: SizedBox(
-                                height: 47.h,
-                                width: 43.w,
-                                child: CustomPaint(
-                                  size: const Size(47, 43),
-                                  painter: RPSCustomPainter(),
-                                ),
-                              ),
+                              top: 315.h,
+                              left: 53.w,
                               child: SizedBox(
-                                height: 47.h,
-                                width: 43.w,
-                                child: CustomPaint(
-                                  size: const Size(47, 43),
-                                  painter: RPSCustomPainter(),
+                                width: 273.w,
+                                child: SliderTheme(
+                                  data: SliderTheme.of(context).copyWith(
+                                      // thumb shape should be a rectangle with 50 radius and some custom widgets inside of it
+                                      overlayShape:
+                                          const RoundSliderOverlayShape(
+                                        overlayRadius: 0,
+                                      ),
+                                      overlayColor: Colors.transparent,
+                                      // track shape should should be rectangular with rounded borders and shadow effect
+                                      trackShape:
+                                          const RoundedRectSliderTrackShape(),
+                                      trackHeight: 10,
+                                      thumbShape:
+                                          const TriangularSliderThumbShape()),
+                                  child: Slider(
+                                    activeColor: Colors.transparent,
+                                    inactiveColor:
+                                        Colors.black.withOpacity(0.2),
+                                    thumbColor: Colors.black,
+                                    value: watch.sliderValue,
+                                    onChanged: (value) {
+                                      watch.sliderValue = (value);
+                                    },
+                                    allowedInteraction:
+                                        SliderInteraction.tapAndSlide,
+                                  ),
                                 ),
-                              ),
-                              onDragUpdate: (details) {
-                                setState(() {
-                                  print(
-                                      'details primary delta: ${details.primaryDelta})');
-                                  // Update the position based on drag update
-                                  watch.sliderValue -=
-                                      details.primaryDelta == null
-                                          ? 0.0
-                                          : details.primaryDelta!;
-                                  // Ensure the position stays within the desired range (10 to 105)
-                                  watch.sliderValue = watch.sliderValue;
-                                });
-                              },
-                            ),
-                          );
+                              ));
                         },
                       ),
                       // set charge limit text
@@ -514,9 +511,11 @@ class _ChargingScreenState extends State<ChargingScreen>
                                           ? Icons.keyboard_arrow_up
                                           : Icons.keyboard_arrow_down_sharp,
                                       () {
-                                    setState(() {
-                                      isExpanded = !isExpanded;
-                                    });
+                                    setState(
+                                      () {
+                                        isExpanded = !isExpanded;
+                                      },
+                                    );
                                   }),
                                 ],
                               ),
@@ -621,6 +620,93 @@ class RPSCustomPainter extends CustomPainter {
     path_0.cubicTo(38.1651.w, 22.1517.h, 37.22.w, 24.h, 35.5885.w, 24.h);
     path_0.lineTo(19.0661.w, 24.h);
     path_0.cubicTo(17.5043.w, 24, 16.5451.h, 22.2898.w, 17.3595.h, 20.9571.w);
+    path_0.close();
+
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.shader = ui.Gradient.linear(
+        Offset(size.width * 0.5851064, size.height * 0.1395349),
+        Offset(size.width * 0.5851064, size.height * 0.5581395),
+        [Color(0xff2FB8FF).withOpacity(1), Color(0xff9EECD9).withOpacity(1)],
+        [0, 1]);
+    canvas.drawPath(path_0, paint0Fill);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class SliderActivePath extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint0Fill = Paint()..style = PaintingStyle.fill;
+    paint0Fill.color = const Color(0xff242528).withOpacity(0.7);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+            Rect.fromLTWH(size.width * 0.001824818, 0, size.width * 0.9963504,
+                size.height),
+            bottomRight: Radius.circular(size.width * 0.01642336),
+            bottomLeft: Radius.circular(size.width * 0.01642336),
+            topLeft: Radius.circular(size.width * 0.01642336),
+            topRight: Radius.circular(size.width * 0.01642336)),
+        paint0Fill);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class TriangularSliderThumbShape extends SliderComponentShape {
+  const TriangularSliderThumbShape({
+    this.enabledThumbRadius = 0.0,
+    this.disabledThumbRadius,
+    this.elevation = 10.0,
+    this.pressedElevation = 6.0,
+  });
+
+  final double enabledThumbRadius;
+  final double? disabledThumbRadius;
+
+  double get _disabledThumbRadius => disabledThumbRadius ?? enabledThumbRadius;
+
+  final double elevation;
+  final double pressedElevation;
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return Size.fromRadius(
+        isEnabled ? enabledThumbRadius : _disabledThumbRadius);
+  }
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    Path path_0 = Path();
+    Size size = Size(47, 43);
+    final Canvas canvas = context.canvas
+      ..translate(center.dx - 25, -size.height / 2 + 10);
+    path_0.moveTo(17.3595, 20.9571);
+    path_0.lineTo(24.9323, 8.56532);
+    path_0.cubicTo(25.6774, 7.34611, 27.4236, 7.2789, 28.2602, 8.43724);
+    path_0.lineTo(37.2098, 20.829);
+    path_0.cubicTo(38.1651, 22.1517, 37.22, 24, 35.5885, 24);
+    path_0.lineTo(19.0661, 24);
+    path_0.cubicTo(17.5043, 24, 16.5451, 22.2898, 17.3595, 20.9571);
     path_0.close();
 
     Paint paint_0_fill = Paint()..style = PaintingStyle.fill;
