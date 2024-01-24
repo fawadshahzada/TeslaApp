@@ -73,6 +73,8 @@ class _ClimateScreenState extends State<ClimateScreen> {
                       ),
                       Consumer<ClimateProvider>(
                         builder: (context, value, child){
+                          print('value: ${value.progressIndicatorValue}');
+                          print('last button pressed: ${value.lastButtonPressed}');
                           double watch = 0;
                           if(value.lastButtonPressed == 'AC'){
                             watch = value.acSliderValue;
@@ -83,7 +85,6 @@ class _ClimateScreenState extends State<ClimateScreen> {
                           }else if(value.lastButtonPressed == 'Auto'){
                             watch = value.autoSliderValue;
                           }
-
                           return  Positioned(
                             top: 120.h,
                             left: 100.w,

@@ -29,21 +29,11 @@ class ClimateProvider extends ChangeNotifier {
 
   void acButtonPressed() {
     acButton();
-    if(acButtonON){
-      lastButtonPressed = 'AC';
-      progressIndicator();
-    }
-      showProgressIndicator();
     notifyListeners();
   }
 
   void fanButtonPressed() {
     fanButton();
-    if(fanButtonON){
-      lastButtonPressed = 'Fan';
-      showProgressIndicator();
-      progressIndicator();
-    }
     notifyListeners();
   }
 
@@ -59,15 +49,11 @@ class ClimateProvider extends ChangeNotifier {
 
   void autoButtonPressed() {
     autoButton();
-    if(autoButtonON){
-      lastButtonPressed = 'Auto';
-      showProgressIndicator();
-      progressIndicator();
-    }
     notifyListeners();
   }
 
   void acButton() {
+    lastButtonPressed = 'AC';
     acButtonON = !acButtonON;
     showProgressIndicator();
 
@@ -75,6 +61,7 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void fanButton() {
+    lastButtonPressed = 'Fan';
     fanButtonON = !fanButtonON;
     showProgressIndicator();
 
@@ -82,6 +69,7 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void heatButton() {
+    lastButtonPressed = 'Heat';
     heatButtonON = !heatButtonON;
     showProgressIndicator();
 
@@ -89,6 +77,7 @@ class ClimateProvider extends ChangeNotifier {
   }
 
   void autoButton() {
+    lastButtonPressed = 'Auto';
     autoButtonON = !autoButtonON;
     showProgressIndicator();
     notifyListeners();
