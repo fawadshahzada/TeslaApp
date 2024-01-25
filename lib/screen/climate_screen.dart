@@ -53,23 +53,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
                   width: 300.w,
                   child: Stack(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            // drop shadow effect to the top left
-                            BoxShadow(
-                              color: const Color(0xffffffff).withOpacity(0.05),
-                              spreadRadius: -60,
-                              blurRadius: 10,
-                              offset: const Offset(-4, -8),
-                            ),
-                          ],
-                        ),
-                        child: CustomPaint(
-                          size: Size(370.w, (370.w * 1).toDouble()),
-                          painter: RPSCustomPainter(),
-                        ),
+                      CustomPaint(
+                        size: Size(370.w, (370.w * 1).toDouble()),
+                        painter: RPSCustomPainter(),
                       ),
                       Consumer<ClimateProvider>(
                         builder: (context, value, child){
@@ -91,6 +77,11 @@ class _ClimateScreenState extends State<ClimateScreen> {
                             child: (value.showCircularProgressIndicator)
                                 ? Container(
                               width: 100.w,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.02),
+                                shape: BoxShape.circle,
+
+                              ),
                               alignment: Alignment.center,
                               child: AnimatedFlipCounter(
                                 value: watch * 100,
