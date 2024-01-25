@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:test1/common_widget/lock_unlock_container.dart';
 import 'package:test1/common_widget/setting_button.dart';
 import 'package:test1/screen/home_screen.dart';
@@ -54,25 +55,28 @@ class _LockScreenState extends State<LockScreen>
                       Color(0xff282a2f),
                       Color(0xff28343b),
                       Color(0xff18191b),
+                      Color(0xff18191b),
                     ],
                   )
-                : const LinearGradient(
+                : LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0xff202327),
-                      Color(0xff000000),
-                      Color(0xff000000),
-                      Color(0xff272727),
+                      const Color(0xff202327),
+                      const Color(0xff000000),
+                      const Color(0xff000000),
+                      const Color(0xff000000),
+                      const Color(0xff272727).withOpacity(0.8),
                     ],
                   ),
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              SizedBox(
+                height: 50.h,
+              ),
               Padding(
-                  padding: EdgeInsets.only(left: 250.w),
+                  padding: EdgeInsets.only(left: 270.w),
                   child: settingButton(context, Icons.settings, () {
                     Navigator.push(
                         context,
@@ -81,6 +85,9 @@ class _LockScreenState extends State<LockScreen>
                                   currentScreen: 0,
                                 )));
                   })),
+              SizedBox(
+                height: 70.h,
+              ),
               isExpanded
                   ? SizedBox(
                       height: 400.h,
@@ -128,8 +135,11 @@ class _LockScreenState extends State<LockScreen>
                       height: 400.h,
                       child: Image.asset('assets/images/black_car_image.png'),
                     ),
+              SizedBox(
+                height: 20.h,
+              ),
               lockUnlockContainer(
-                isExpanded ? Icons.lock_open_rounded : Icons.lock,
+                isExpanded ? FontAwesomeIcons.lockOpen : FontAwesomeIcons.lock,
                 isExpanded ? 'Lock' : 'Unlock',
                 () {
                   // make the value equal to 0

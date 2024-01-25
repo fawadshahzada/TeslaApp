@@ -1,41 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:test1/common_widget/setting_button.dart';
 
-Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed,context) {
-  return Container(
+Widget lockUnlockContainer(
+    IconData icon, String text, void Function() onPressed, context) {
+  return GlassmorphicContainer(
     width: 178.w,
-    height: 77.h,
-    padding: const EdgeInsets.only(left: 20,),
-    decoration: BoxDecoration(
-      color: Colors.black,
-      borderRadius: BorderRadius.circular(40.r),
-      // shadow that goes inside the box making the child look shallower
-      gradient: LinearGradient(
-        begin: Alignment.centerRight,
-        end: Alignment.centerLeft,
-        colors: [
-          const Color(0xFF494c51).withOpacity(0.5),
-          const Color(0xFF2D2D2D).withOpacity(0.3),
-        ],
-      ),
+    height: 92.h,
+    borderRadius: 40.r,
+    blur: 17,
+    alignment: Alignment.center,
+    border:3.0,
+    linearGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        const Color(0xff000000).withOpacity(0.01),
+        const Color(0xff000000).withOpacity(0.01),
+        const Color(0xffFFFFFF).withOpacity(0.01),
+        //const Color(0xff000000).withOpacity(0.01),
+      ],
+      stops: const [
+        0.1,
+        0.5,
+        1,
+      ],
+    ),
+    borderGradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomRight,
+      colors: [
+        const Color(0xff000000).withOpacity(0.1),
+        const Color(0xff000000).withOpacity(0.1),
+        const Color(0xffffffff).withOpacity(0.08),
+        const Color(0xffffffff).withOpacity(0.08),
+      ],
+      stops: const [
+        0.0,
+        0.05,
+        0.5,
+        1,
+      ],
     ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           flex: 2,
-          child: SizedBox(
-            width: 110.w,
-            child: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17.sp,
-                  fontFamily: 'SfProBold',
-                ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 17.sp,
+                fontFamily: 'SfProBold',
               ),
             ),
           ),
@@ -43,7 +63,12 @@ Widget lockUnlockContainer(IconData icon, String text, void Function() onPressed
         // circular elevated button with shadow and setting icon
         Expanded(
           flex: 2,
-            child: settingButton(context, icon, onPressed))
+          child: containerSettingButton(
+            context,
+            icon,
+            onPressed,
+          ),
+        )
       ],
     ),
   );

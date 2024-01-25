@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                           },
                           icon: Icon(
                             CupertinoIcons.car_detailed,
-                            color: const Color(0xffEBEBF5).withOpacity(0.6),
+                            color: watch.currentIndex==0?const Color(0xff2FB8FF).withOpacity(1) :const Color(0xffEBEBF5).withOpacity(0.6),
                             size: 30.r,
                           ),
                         ),
@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                           },
                           icon: Icon(
                             Icons.electric_bolt,
-                            color: const Color(0xffEBEBF5).withOpacity(0.6),
+                            color: watch.currentIndex==1?const Color(0xff2FB8FF).withOpacity(1) :const Color(0xffEBEBF5).withOpacity(0.6),
                             size: 30.r,
                           ),
                         ),
@@ -96,7 +96,7 @@ class HomeScreen extends StatelessWidget {
                           },
                           icon: Icon(
                             CupertinoIcons.location_fill,
-                            color: const Color(0xffEBEBF5).withOpacity(0.6),
+                            color: watch.currentIndex==2?const Color(0xff2FB8FF).withOpacity(1) :const Color(0xffEBEBF5).withOpacity(0.6),
                             size: 28.r,
                           ),
                         ),
@@ -108,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                           },
                           icon: Icon(
                             Icons.person,
-                            color: const Color(0xffEBEBF5).withOpacity(0.6),
+                            color: watch.currentIndex==3?const Color(0xff2FB8FF).withOpacity(1) :const Color(0xffEBEBF5).withOpacity(0.6),
                             size: 30.r,
                           ),
                         ),
