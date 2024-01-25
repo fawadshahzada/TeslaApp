@@ -299,7 +299,7 @@ class _ClimateScreenState extends State<ClimateScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Text(
               text,
               style: TextStyle(
@@ -309,6 +309,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
                 fontFamily: 'SfProBold',
               ),
             ),
+          ),
+          SizedBox(
+            width: 20.w,
           ),
           Expanded(
             flex: 4,
@@ -323,9 +326,12 @@ class _ClimateScreenState extends State<ClimateScreen> {
               }, text);
             }, isOn,),
           ),
+          SizedBox(
+            width: 20.w,
+          ),
           // slider with custom indicator
           Expanded(
-            flex: 9,
+            flex: 10,
             child: SizedBox(
               width: 192.w,
               height: 15.h,
@@ -353,6 +359,9 @@ class _ClimateScreenState extends State<ClimateScreen> {
                 ),
               ),
             ),
+          ),
+          SizedBox(
+            width: 20.w,
           ),
         ],
       ),
